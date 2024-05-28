@@ -9,6 +9,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  int currIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,22 +21,19 @@ class _HomePageState extends State<HomePage> {
             Container(
               height: 160,
               width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor
-              ),
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: Padding(
                 padding: EdgeInsets.all(12.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[ 
+                  children: <Widget>[
                     Text(
                       "Sra, Forum",
                       style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600
-                      ),
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
                     ),
                     SizedBox(height: 8.0),
                     Row(
@@ -51,39 +50,37 @@ class _HomePageState extends State<HomePage> {
                           Icons.search,
                           size: 20,
                           color: Colors.white,
-                        )
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
-            Container( 
+            Container(
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(35.0),
-                  topRight: Radius.circular(35.0)
-                )
-              ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(35.0),
+                      topRight: Radius.circular(35.0))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[ 
-                  TopBar(), 
+                children: <Widget>[
+                  TopBar(),
                   Padding(
                     padding: EdgeInsets.all(20.0),
                     child: Text(
                       "Popular Topics",
                       style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black
-                      ),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
                     ),
                   ),
                   PopularTopics(),
                   Padding(
-                    padding: EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0),
+                    padding:
+                        EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0),
                     child: Text(
                       "Trending Posts",
                       style: TextStyle(
@@ -95,10 +92,32 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Posts()
                 ],
-              )
-            )
+              ),
+            ),
           ],
-        )
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: currIndex,
+        onTap: (index) {
+          setState(() {
+            currIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.create),
+            label: 'create',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'profile',
+          ),
+        ],
       ),
     );
   }
