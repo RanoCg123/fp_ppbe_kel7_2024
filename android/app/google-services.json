@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "747731541162",
+    "project_id": "fp-ppb-db4dd",
+    "storage_bucket": "fp-ppb-db4dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:747731541162:android:f51e3615fe7247dd0c84d3",
+        "android_client_info": {
+          "package_name": "com.example.fp_forum_kel7_ppbe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVgwQe2tSAsUE9D8P0TZU4A_xsrDMQdsU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
