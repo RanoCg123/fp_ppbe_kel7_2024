@@ -12,7 +12,7 @@ class Reply {
   });
 }
 
-List<Reply> reply = [
+List<Reply> replies = [
   Reply(
     author: mike,
     content: 'LMOA try to learn php using udemy or youtube courses if your good enough elrrn from docs',
@@ -49,3 +49,5 @@ List<Reply> reply = [
     likes: 27
   ),
 ];
+
+var reply = replies;
