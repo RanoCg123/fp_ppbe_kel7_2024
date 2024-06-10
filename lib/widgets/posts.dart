@@ -8,6 +8,8 @@ class Posts extends StatefulWidget {
 }
 
 class _PostsState extends State<Posts> {
+  get questions => null;
+
   @override
   Widget build(BuildContext context) {
     return Column(
