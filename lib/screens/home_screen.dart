@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:fp_forum_kel7_ppbe/widgets/popular_topics.dart';
 import 'package:fp_forum_kel7_ppbe/widgets/posts.dart';
 import 'package:fp_forum_kel7_ppbe/widgets/top_bar.dart';
-
 import '../models/post_model.dart';
 import '../services/post_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
+
 }
 
 class _HomePageState extends State<HomePage> {
@@ -33,6 +34,13 @@ class _HomePageState extends State<HomePage> {
     getQuestions();
   }
 
+  final user = FirebaseAuth.instance.currentUser!;
+
+  // sign user out method
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -76,6 +84,23 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
+//           ],
+//         ),
+//       ),
+//       bottomNavigationBar: BottomNavigationBar(
+//         currentIndex: currIndex,
+//         onTap: (index) {
+//           setState(() {
+//             currIndex = index;
+//           });
+//         },
+//         items: [
+//           BottomNavigationBarItem(
+//             icon: IconButton(
+//               onPressed: signUserOut,
+//               icon: Icon(Icons.home),
+//             ),
+//             label: 'Home',
           ),
           Container(
             decoration: BoxDecoration(
