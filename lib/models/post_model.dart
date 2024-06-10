@@ -21,4 +21,17 @@ class Question{
     required this.author,
     required this.replies
   });
+
+  factory Question.fromMap(Map<String, dynamic> data) {
+    return Question(
+      question: data['question'] ?? '',
+      content: data['content'] ?? '',
+      votes: data['votes'] ?? 0,
+      repliesCount: data['repliesCount'] ?? 0,
+      views: data['views'] ?? 0,
+      created_at: data['created_at'] ?? '',
+      author: mike,
+      replies: reply,
+    );
+  }
 }

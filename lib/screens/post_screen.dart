@@ -77,6 +77,7 @@ class _PostScreenState extends State<PostScreen> {
                                     Container(  
                                       child: Text(
                                         widget.question.author.name,
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
