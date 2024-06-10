@@ -12,7 +12,7 @@ class Reply {
   });
 }
 
-List<Reply> replies = [
+List<Reply> reply = [
   Reply(
     author: mike,
     content: 'LMOA try to learn php using udemy or youtube courses if your good enough elrrn from docs',
