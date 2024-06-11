@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/popular_topics.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/posts.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/top_bar.dart';
+import '../widgets/popular_topics.dart';
+import '../widgets/posts.dart';
+import '../widgets/top_bar.dart';
 
 class HomePage extends StatefulWidget {
   @override

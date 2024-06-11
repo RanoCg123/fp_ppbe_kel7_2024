@@ -1,11 +1,25 @@
-class Author{
+class Author {
   String name;
   String imageUrl;
 
   Author({
     required this.name,
-    required this.imageUrl
+    required this.imageUrl,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'imageUrl': imageUrl,
+    };
+  }
+
+  factory Author.fromMap(Map<String, dynamic> map) {
+    return Author(
+      name: map['name'],
+      imageUrl: map['imageUrl'],
+    );
+  }
 }
 
 final Author mark = Author(
