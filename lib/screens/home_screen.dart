@@ -2,120 +2,146 @@ import 'package:flutter/material.dart';
 import '../widgets/popular_topics.dart';
 import '../widgets/posts.dart';
 import '../widgets/top_bar.dart';
+import 'package:fp_forum_kel7_ppbe/widgets/popular_topics.dart';
+import 'package:fp_forum_kel7_ppbe/widgets/posts.dart';
+import 'package:fp_forum_kel7_ppbe/widgets/top_bar.dart';
+import '../models/post_model.dart';
+import '../services/post_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   int currIndex = 0;
+  List<Question>? questions;
+  bool questionLoaded = false;
+
+  void getQuestions() async {
+    questions = await PostService().getPosts();
+    setState(() {
+      questionLoaded = true;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getQuestions();
+  }
+
+  // final user = FirebaseAuth.instance.currentUser!;
+
+  // sign user out method
+  // void signUserOut() {
+  //   FirebaseAuth.instance.signOut();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            Container(
-              height: 160,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: Padding(
-                padding: EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      "Sra, Forum",
-                      style: TextStyle(
-                          fontSize: 24,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(height: 8.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          "Find Topics you like to read",
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
-                            fontSize: 14.0,
-                          ),
-                        ),
-                        Icon(
-                          Icons.search,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(35.0),
-                      topRight: Radius.circular(35.0))),
+    return SafeArea(
+      child: ListView(
+        children: <Widget>[
+          Container(
+            height: 160,
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+            child: Padding(
+              padding: EdgeInsets.all(12.0),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  TopBar(),
-                  Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Text(
-                      "Popular Topics",
-                      style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
-                    ),
+                  Text(
+                    "Sra, Forum",
+                    style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600),
                   ),
-                  PopularTopics(),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0),
-                    child: Text(
-                      "Trending Posts",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                  SizedBox(height: 8.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        "Find Topics you like to read",
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.6),
+                          fontSize: 14.0,
+                        ),
                       ),
-                    ),
+                      Icon(
+                        Icons.search,
+                        size: 20,
+                        color: Colors.white,
+                      ),
+                    ],
                   ),
-                  Posts()
                 ],
               ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: currIndex,
-        onTap: (index) {
-          setState(() {
-            currIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+//           ],
+//         ),
+//       ),
+//       bottomNavigationBar: BottomNavigationBar(
+//         currentIndex: currIndex,
+//         onTap: (index) {
+//           setState(() {
+//             currIndex = index;
+//           });
+//         },
+//         items: [
+//           BottomNavigationBarItem(
+//             icon: IconButton(
+//               onPressed: signUserOut,
+//               icon: Icon(Icons.home),
+//             ),
+//             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.create),
-            label: 'create',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.people),
-            label: 'profile',
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(35.0),
+                    topRight: Radius.circular(35.0))),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TopBar(),
+                Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text(
+                    "Popular Topics",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  ),
+                ),
+                PopularTopics(),
+                Padding(
+                  padding: EdgeInsets.only(left: 20.0, top: 20.0, bottom: 10.0),
+                  child: Text(
+                    "Trending Posts",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                !questionLoaded
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : Posts(questions)
+              ],
+            ),
           ),
         ],
       ),

@@ -132,8 +132,7 @@ class _PostScreenState extends State<PostScreen> {
                           Row(
                             children: <Widget>[
                               CircleAvatar(
-                                backgroundImage:
-                                AssetImage(widget.question.author.imageUrl),
+                                backgroundImage: AssetImage(widget.question.author.image),
                                 radius: 22,
                               ),
                               Padding(
@@ -143,6 +142,7 @@ class _PostScreenState extends State<PostScreen> {
                                     Container(
                                       child: Text(
                                         widget.question.author.name,
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold,
@@ -299,6 +299,35 @@ class _PostScreenState extends State<PostScreen> {
                                         ),
                                       ),
                                     ],
+//               children: widget.question.replies.map((reply) => 
+//                 Container( 
+//                   margin: EdgeInsets.only(left:15.0, right: 15.0, top: 20.0),
+//                   decoration: BoxDecoration(
+//                     color: Colors.white,
+//                     borderRadius: BorderRadius.circular(10.0),
+//                     boxShadow: [BoxShadow(
+//                       color: Colors.black26.withOpacity(0.03),
+//                       offset: Offset(0.0,6.0),
+//                       blurRadius: 10.0,
+//                       spreadRadius: 0.10
+//                     )],
+//                   ),
+//                   child: Padding(
+//                     padding: EdgeInsets.all(15.0),
+//                     child: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: <Widget>[
+//                         Container(
+//                           height: 60,
+//                           color: Colors.white,
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                             children: <Widget>[
+//                               Row(
+//                                 children: <Widget>[
+//                                   CircleAvatar(
+//                                     backgroundImage: AssetImage(reply.author.image),
+//                                     radius: 18,
                                   ),
                                 ),
                               ],

@@ -1,65 +1,27 @@
-class Author {
-  String name;
-  String imageUrl;
+class Author{
+  final String uid;
+  final String name;
+  final String email;
+  final String image;
 
-  Author({
+  const Author({
     required this.name,
-    required this.imageUrl,
+    required this.image,
+    required this.uid,
+    required this.email,
   });
+  factory Author.fromJson(Map<String, dynamic> json) =>
+      Author(
+        uid: json['uid'],
+        name: json['name'],
+        image: json['image'],
+        email: json['email'],
+      );
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'imageUrl': imageUrl,
-    };
-  }
-
-  factory Author.fromMap(Map<String, dynamic> map) {
-    return Author(
-      name: map['name'],
-      imageUrl: map['imageUrl'],
-    );
-  }
+  Map<String, dynamic> toJson() => {
+    'uid': uid,
+    'name': name,
+    'image': image,
+    'email': email,
+  };
 }
-
-final Author mark = Author(
-  name: 'Mark Lewis',
-  imageUrl: 'assets/images/author1.jpg'
-);
-
-final Author john = Author(
-  name: 'John Sabestiam',
-  imageUrl: 'assets/images/author2.jpg'
-);
-
-final Author mike = Author(
-  name: 'Mike Ruther',
-  imageUrl: 'assets/images/author3.jpg'
-);
-
-final Author adam = Author(
-  name: 'Adam Zampal',
-  imageUrl: 'assets/images/author4.jpg'
-);
-final Author justin = Author(
-  name: 'Justin Neither',
-  imageUrl: 'assets/images/author5.jpg'
-);
-final Author sam = Author(
-  name: 'Samuel Tarly',
-  imageUrl: 'assets/images/author6.jpg'
-);
-final Author luther = Author(
-  name: 'Luther',
-  imageUrl: 'assets/images/author7.jpg'
-);
-
-final List<Author> authors = [
-  luther,
-  sam,
-  justin,
-  adam,
-  mike,
-  john,
-  mark
-];
