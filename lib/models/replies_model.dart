@@ -39,13 +39,23 @@ class Reply {
 
 List<Reply> replies = [
   Reply(
-    author: Author(name: 'User1', imageUrl: 'assets/images/user1.png'),
+    author: const Author(
+      uid: "sHvvquERQrNNW0rOLYYQwavihrD2",
+      name: 'Thoriq Afif Habibi',
+      image: 'assets/images/user1.png',
+      email: "thoriq@example.com",
+    ),
     content: 'Great post!',
     created_at: '2024-06-10 12:00:00',
     likes: 10,
   ),
   Reply(
-    author: Author(name: 'User2', imageUrl: 'assets/images/user2.png'),
+    author: const Author(
+      uid: "sHvvquERQrNNW0rOLYYQwavihrD2",
+      name: 'Thoriq Afif Habibi',
+      image: 'assets/images/user1.png',
+      email: "thoriq@example.com",
+    ),
     content: 'Thanks for sharing!',
     created_at: '2024-06-10 13:00:00',
     likes: 5,

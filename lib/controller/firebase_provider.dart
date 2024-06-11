@@ -27,14 +27,14 @@ class FirebaseProvider extends ChangeNotifier {
 
   Author? getUserById(String authorId) {
     FirebaseFirestore.instance
-        .collection('authors')
+        .collection('users')
         .doc(authorId)
         .snapshots(includeMetadataChanges: true)
         .listen((author) {
       this.author = Author.fromJson(author.data()!);
-      notifyListeners();
+      // notifyListeners();
     });
-    return author;
+    return this.author;
   }
 
 

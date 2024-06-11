@@ -1,12 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fp_forum_kel7_ppbe/controller/firebase_provider.dart';
 import '../models/author_model.dart';
 import '../models/post_model.dart';
 import '../models/replies_model.dart';
 import 'reply_screen.dart';
-import '../services/firestore_service.dart';
+import '../services/reply_service.dart';
 
 class PostScreen extends StatefulWidget {
-  final Question question;
+  final Post question;
 
   PostScreen({required this.question});
 
@@ -17,6 +19,7 @@ class PostScreen extends StatefulWidget {
 class _PostScreenState extends State<PostScreen> {
   TextEditingController _replyController = TextEditingController();
   late FirestoreService _firestoreService;
+  final user = FirebaseAuth.instance.currentUser!;
   List<Reply> _replies = [];
 
   @override
@@ -36,10 +39,11 @@ class _PostScreenState extends State<PostScreen> {
   void _addReply() async {
     final newReply = Reply(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      author: Author(
-        name: 'Current User',
-        imageUrl: 'assets/images/default_user.png',
-      ),
+      // author: Author(
+      //   name: 'Current User',
+      //   image: 'assets/images/default_user.png',
+      // ),
+      author: FirebaseProvider().getUserById(user.uid)!,
       content: _replyController.text,
       created_at: DateTime.now().toIso8601String(),
       likes: 0,
@@ -274,7 +278,7 @@ class _PostScreenState extends State<PostScreen> {
                             Row(
                               children: <Widget>[
                                 CircleAvatar(
-                                  backgroundImage: AssetImage(reply.author.imageUrl),
+                                  backgroundImage: AssetImage(reply.author.image),
                                   radius: 18,
                                 ),
                                 Padding(

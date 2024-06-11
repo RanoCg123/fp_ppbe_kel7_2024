@@ -18,14 +18,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currIndex = 0;
-  List<Question>? questions;
+  List<Post>? questions;
   bool questionLoaded = false;
+  final postService = PostService();
 
   void getQuestions() async {
-    questions = await PostService().getPosts();
+    setState(() {
+      questionLoaded = false;
+    });
+    questions = await postService.getPosts();
     setState(() {
       questionLoaded = true;
     });
+  }
+
+  void deletePost(String postId) {
+    postService.deletePost(postId);
+    getQuestions();
   }
 
   @override
@@ -135,11 +144,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                !questionLoaded
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Posts(questions)
+                Posts()
               ],
             ),
           ),
