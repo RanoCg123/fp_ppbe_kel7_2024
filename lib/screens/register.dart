@@ -28,6 +28,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Uint8List? file;
   // sign user in method
   void signUserUp() async {
+    if (file == null) {
+      showErrorMessage('Please select an image in the circle');
+      return;
+    }
+    if (nameController.text == null) {
+      showErrorMessage('Please type tour name');
+      return;
+    }
     // show loading circle
     showDialog(
       context: context,
@@ -40,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // try sign in
     try {
-      if (passwordController.text == confirmpasswordController.text) {
+      if (passwordController.text == confirmpasswordController.text)  {
         final user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,
