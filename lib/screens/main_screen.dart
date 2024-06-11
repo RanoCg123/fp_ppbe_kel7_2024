@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fp_forum_kel7_ppbe/screens/create_post_screen.dart';
 import 'package:fp_forum_kel7_ppbe/screens/home_screen.dart';
+import 'package:fp_forum_kel7_ppbe/screens/profile_screen.dart';
 
 class MainPage extends StatefulWidget {
   static const List<Widget> _pages = <Widget>[
     HomePage(),
     CreatePostPage(),
-    Center(
-      child: Icon(
-        Icons.people,
-        size: 150,
-      ),
-    ),
+    ProfilePage(),
   ];
 
-  MainPage({super.key});
+  const MainPage({super.key});
 
   @override
   State<MainPage> createState() => _MainPageState();

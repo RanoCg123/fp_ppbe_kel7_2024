@@ -21,11 +21,11 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData( 
-        primaryColor: Color.fromRGBO(42, 91, 209, 1),
+        primaryColor: const Color.fromRGBO(42, 91, 209, 1),
         fontFamily: 'Montserratcd'
       ),
-      home: MainPage(),
-      // home: AuthPage(),
+      // home: const MainPage(),
+      home: AuthPage(),
     );
   }
 }

@@ -58,7 +58,7 @@ class _PostsState extends State<Posts> {
                                   children: <Widget>[
                                     CircleAvatar(
                                       backgroundImage:
-                                          AssetImage(question.author.imageUrl),
+                                          AssetImage(question.author.image),
                                       radius: 22,
                                     ),
                                     Padding(

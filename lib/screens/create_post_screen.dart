@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fp_forum_kel7_ppbe/models/author_model.dart';
-import 'package:fp_forum_kel7_ppbe/models/replies_model.dart';
 import 'package:fp_forum_kel7_ppbe/models/post_model.dart';
 import 'package:fp_forum_kel7_ppbe/widgets/my_button.dart';
 
@@ -27,7 +26,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       repliesCount: 80,
       views: 200,
       created_at: "1 hour ago",
-      author: mark,
+      author: Author(uid: "", name: "Mark", email: "", image: ""),
       replies: [],
     );
 

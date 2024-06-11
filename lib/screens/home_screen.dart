@@ -10,8 +10,7 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
-
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
@@ -20,11 +19,10 @@ class _HomePageState extends State<HomePage> {
   bool questionLoaded = false;
 
   void getQuestions() async {
-    questions = await PostService().getQuestions();
+    questions = await PostService().getPosts();
     setState(() {
       questionLoaded = true;
     });
-    print("question => $questions\n\n\n\n");
   }
 
   @override
@@ -34,13 +32,13 @@ class _HomePageState extends State<HomePage> {
     getQuestions();
   }
 
-  final user = FirebaseAuth.instance.currentUser!;
+  // final user = FirebaseAuth.instance.currentUser!;
 
   // sign user out method
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
-  
+  // void signUserOut() {
+  //   FirebaseAuth.instance.signOut();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

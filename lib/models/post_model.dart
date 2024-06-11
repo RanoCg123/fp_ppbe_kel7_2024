@@ -30,8 +30,8 @@ class Question{
       repliesCount: data['repliesCount'] ?? 0,
       views: data['views'] ?? 0,
       created_at: data['created_at'] ?? '',
-      author: mike,
-      replies: reply,
+      author: Author(image: "", email: "", name: "", uid: ""),
+      replies: [],
     );
   }
 }

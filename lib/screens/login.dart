@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
 
               // sign in button
               MyButton(
-                text: 'Sign In',
+                'Sign In',
                 onTap: signUserIn,
               ),
 

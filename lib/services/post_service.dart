@@ -23,27 +23,9 @@ class PostService {
     });
   }
 
-  // Stream<List<Question>> getPost() {
-  //   final postStream = posts.snapshots().map((querySnapshot) {
-  //     return querySnapshot.docs.map((doc) {
-  //       return Question.fromMap(doc.data() as Map<String, dynamic>);
-  //     }).toList();
-  //   });
-  //
-  //   print("tes\n");
-  //   print(postStream);
-  //
-  //   return postStream;
-  // }
-  Stream<QuerySnapshot> getPost() {
-    final postStream = posts.orderBy("views", descending: true).snapshots();
-
-    return postStream;
-  }
-
   // final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //
-  Future<List<Question>> getQuestions() async {
+  Future<List<Question>> getPosts() async {
     try {
       List<Question> questions = [];
       await posts.get().then((event) {
@@ -56,12 +38,11 @@ class PostService {
             repliesCount: data['repliesCount'],
             views: data['views'],
             created_at: data['created_at'],
-            author: mark,
-            replies: reply,
+            author: Author(image: "", email: "", name: "Mark", uid: ""),
+            replies: [],
           ));
         }
       });
-      print("Service \n\n\n\n");
 
       return questions;
     } catch (e) {
