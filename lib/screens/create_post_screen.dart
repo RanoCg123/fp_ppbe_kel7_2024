@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/controller/firebase_provider.dart';
-import 'package:fp_forum_kel7_ppbe/models/author_model.dart';
-import 'package:fp_forum_kel7_ppbe/models/post_model.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/my_button.dart';
+import '../controller/firebase_provider.dart';
+import '../models/author_model.dart';
+import '../models/post_model.dart';
+import '../widgets/my_button.dart';
 
 import '../services/post_service.dart';
 import '../widgets/text_field.dart';

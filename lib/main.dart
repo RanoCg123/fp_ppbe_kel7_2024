@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/screens/home_screen.dart';
+import '../screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:fp_forum_kel7_ppbe/screens/main_screen.dart';
-import 'package:fp_forum_kel7_ppbe/screens/auth.dart';
+import '../screens/main_screen.dart';
+import '../screens/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

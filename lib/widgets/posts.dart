@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/models/author_model.dart';
-import 'package:fp_forum_kel7_ppbe/models/post_model.dart';
-import 'package:fp_forum_kel7_ppbe/models/replies_model.dart';
-import 'package:fp_forum_kel7_ppbe/screens/post_screen.dart';
-import 'package:fp_forum_kel7_ppbe/services/post_service.dart';
+import '../models/author_model.dart';
+import '../models/post_model.dart';
+import '../models/replies_model.dart';
+import '../screens/post_screen.dart';
+import '../services/post_service.dart';
 
 class Posts extends StatefulWidget {
   // final List<Post>? questions;
