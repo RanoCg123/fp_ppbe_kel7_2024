@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fp_forum_kel7_ppbe/controller/firebase_provider.dart';
 import 'package:fp_forum_kel7_ppbe/models/author_model.dart';
 import 'package:fp_forum_kel7_ppbe/models/post_model.dart';
 import 'package:fp_forum_kel7_ppbe/widgets/my_button.dart';
@@ -15,22 +17,17 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
   final postService = PostService();
+  final firebaseProvider = FirebaseProvider();
+  final user = FirebaseAuth.instance.currentUser!;
   final contentController = TextEditingController();
   final questionController = TextEditingController();
 
   void createPost() {
-    Question question = Question(
-      question: questionController.text,
+    postService.addPost(
       content: contentController.text,
-      votes: 120,
-      repliesCount: 80,
-      views: 200,
-      created_at: "1 hour ago",
-      author: Author(uid: "", name: "Mark", email: "", image: ""),
-      replies: [],
+      question: questionController.text,
+      authorUid: user.uid,
     );
-
-    postService.addPost(question);
   }
 
   @override
