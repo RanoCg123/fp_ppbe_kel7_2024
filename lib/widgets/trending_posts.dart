@@ -6,28 +6,32 @@ import '../services/post_service.dart';
 import '../util/snackbar_util.dart';
 import '../util/modal_util.dart';
 
-class Posts extends StatefulWidget {
+class TrendingPosts extends StatefulWidget {
   // final List<Post>? posts;
   // final Function() deletePost;
 
-  const Posts({super.key});
+  const TrendingPosts({super.key});
 
   @override
-  _PostsState createState() => _PostsState();
+  _TrendingPostsState createState() => _TrendingPostsState();
 }
 
-class _PostsState extends State<Posts> {
+class _TrendingPostsState extends State<TrendingPosts> {
   List<Post>? posts;
   bool postLoaded = false;
   final postService = PostService();
   Post? selectedPost;
   final user = FirebaseAuth.instance.currentUser!;
 
-  void getPosts() async {
+  void getTrendingPosts() async {
     setState(() {
       postLoaded = false;
     });
-    posts = await postService.getPosts();
+    posts = await postService.getPosts(
+      orderBy: 'numVotes',
+      descending: true,
+      limit: 5,
+    );
     setState(() {
       postLoaded = true;
     });
@@ -72,7 +76,7 @@ class _PostsState extends State<Posts> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getPosts();
+    getTrendingPosts();
   }
 
   @override
@@ -80,15 +84,15 @@ class _PostsState extends State<Posts> {
     return Column(
         children: !postLoaded
             ? [
-                const Center(
-                  child: CircularProgressIndicator(),
-                )
-              ]
+          const Center(
+            child: CircularProgressIndicator(),
+          )
+        ]
             : posts!
-                .map((post) => PostWidget(
-                      post: post,
-                      showOptions: showOptions,
-                    ))
-                .toList());
+            .map((post) => PostWidget(
+          post: post,
+          showOptions: showOptions,
+        ))
+            .toList());
   }
 }

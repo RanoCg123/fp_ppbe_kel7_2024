@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fp_forum_kel7_ppbe/widgets/trending_posts.dart';
 import '../widgets/popular_topics.dart';
 import '../widgets/posts.dart';
 import '../widgets/top_bar.dart';
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currIndex = 0;
   List<Post>? questions;
+  List<String>? topics;
   bool questionLoaded = false;
   final postService = PostService();
 
@@ -144,7 +146,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                Posts()
+                TrendingPosts(),
               ],
             ),
           ),

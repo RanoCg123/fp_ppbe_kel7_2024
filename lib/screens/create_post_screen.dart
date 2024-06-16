@@ -68,7 +68,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         final post = await postService.addPost(
           content: contentController.text,
           question: questionController.text,
-          topic: topicController.text,
+          topic: topicController.text.toLowerCase(),
           authorId: user.uid,
         );
 

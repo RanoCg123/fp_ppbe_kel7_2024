@@ -34,11 +34,11 @@ void showBottomOptionModal(
                           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Icon(option.icon),
-                            SizedBox(width: 20.0,),
+                            const SizedBox(width: 20.0,),
                             Text(
                               option.text,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 22,
                               ),
                             ),

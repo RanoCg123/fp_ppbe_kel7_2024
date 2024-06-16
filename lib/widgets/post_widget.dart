@@ -50,6 +50,9 @@ class _PostWidgetState extends State<PostWidget> {
     goToPost();
   }
 
+  void bookmark() async {
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -228,7 +231,11 @@ class _PostWidgetState extends State<PostWidget> {
                             fontSize: 14, color: Colors.black.withOpacity(0.6)),
                       )
                     ],
-                  )
+                  ),
+                  InkWell(
+                    onTap: bookmark,
+                    child: Icon(Icons.bookmark_border),
+                  ),
                 ],
               )
             ],

@@ -7,6 +7,7 @@ class Post {
   String content;
   String topic;
   List<String> votes;
+  int numVotes;
   int repliesCount;
   List<String> views;
   String created_at;
@@ -21,6 +22,7 @@ class Post {
     required this.votes,
     required this.repliesCount,
     required this.views,
+    required this.numVotes,
     required this.created_at,
     required this.author,
     required this.replies,
@@ -65,6 +67,7 @@ class Post {
       content: data['content'] ?? '',
       topic: data['topic'] ?? '',
       votes: data['votes'] ?? [],
+      numVotes: data['numVotes'] ?? 0,
       repliesCount: data['repliesCount'] ?? 0,
       views: data['views'] ?? [],
       created_at: data['created_at'] ?? '',
@@ -82,6 +85,7 @@ class Post {
       'content': content,
       'topic': topic,
       'votes': votes,
+      'numVotes': numVotes,
       'repliesCount': repliesCount,
       'views': views,
       'created_at': created_at,

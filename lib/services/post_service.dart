@@ -5,10 +5,16 @@ import 'package:fp_forum_kel7_ppbe/models/post_model.dart';
 import 'package:fp_forum_kel7_ppbe/models/replies_model.dart';
 import 'package:intl/intl.dart';
 
+import '../models/topic_model.dart';
+
 class PostService {
   // get collection of notes
   final CollectionReference posts =
   FirebaseFirestore.instance.collection("posts");
+
+  // get collection of notes
+  final CollectionReference topics =
+  FirebaseFirestore.instance.collection("topics");
 
   // get collection of users
   final CollectionReference users =
@@ -33,6 +39,22 @@ class PostService {
       "votes": [],
     });
 
+    // add or set topic
+    QuerySnapshot topicSnapshot = await topics.where('name', isEqualTo: topic).get();
+    if (topicSnapshot.docs.isEmpty) {
+      topics.add({
+        "name": topic,
+        'num': 1,
+      });
+    } else {
+      for (final doc in topicSnapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        doc.reference.update({
+          "num": data["num"] + 1,
+        });
+      }
+    }
+
     var postAuthor = await users.doc(authorId).get();
     var postAuthorData = Author.fromJson(postAuthor.data() as Map<String, dynamic>);
 
@@ -42,6 +64,7 @@ class PostService {
       content: content,
       topic: topic,
       votes: [],
+      numVotes: 0,
       repliesCount: 0,
       views: [],
       created_at: DateFormat('dd-MM-yyyy').format(now),
@@ -50,39 +73,60 @@ class PostService {
     );
   }
 
-  //
-  Future<List<Post>> getPosts() async {
+  // get post
+  Future<List<Post>> getPosts({
+    final String? topic,
+    final String? title,
+    final String? content,
+    final int? limit,
+    final String? orderBy,
+    final bool descending = true,
+  }) async {
     try {
       List<Post> questions = [];
-      await posts.orderBy('created_at', descending: true).get().then((event) async {
+      Query query = posts;
+      
+      if (topic != null) {
+        query = query.where("topic", isEqualTo: topic);
+      }
+      if (orderBy != null) {
+        print(orderBy);
+        query = query.orderBy(orderBy, descending: descending);
+      }
+      if (limit != null) {
+        query = query.limit(limit);
+      }
+
+      await query.get().then((event) async {
         for (var doc in event.docs) {
           var data = doc.data() as Map<String, dynamic>;
+          print(data);
 
-          // get the data of author
-          var postAuthorDoc = await users.doc(data['author']).get();
-          Map<String, dynamic> postAuthorData = postAuthorDoc.data() as Map<String, dynamic>;
-          final postAuthor = Author.fromJson(postAuthorData);
+          // add if the title and content suitable
+          if (suitedWithSearch(title, data["question"]) && suitedWithSearch(content, data["content"])){
+            // get the data of author
+            var postAuthorDoc = await users.doc(data['author']).get();
+            Map<String, dynamic> postAuthorData = postAuthorDoc.data() as Map<String, dynamic>;
+            final postAuthor = Author.fromJson(postAuthorData);
 
-          // convert timestamp to datetime
-          Timestamp timestamp = data['created_at'];
-          DateTime createdAt = timestamp.toDate();
+            // convert timestamp to datetime
+            Timestamp timestamp = data['created_at'];
+            DateTime createdAt = timestamp.toDate();
 
-          // get votes
-          List<String> votes = List<String>.from(data["views"]);
-          List<String> views = List<String>.from(data["votes"]);
-
-          questions.add(Post(
-            id: doc.id,
-            question: data['question'],
-            content: data['content'],
-            topic: data['topic'],
-            votes: List<String>.from(data['votes']),
-            repliesCount: data['repliesCount'],
-            views: List<String>.from(data['views']),
-            created_at: DateFormat('dd-MM-yyyy').format(createdAt),
-            author: postAuthor,
-            replies: [],
-          ));
+            questions.add(Post(
+              id: doc.id,
+              question: data['question'],
+              content: data['content'],
+              topic: data['topic'],
+              votes: List<String>.from(data['votes']),
+              numVotes: data['numVotes'],
+              repliesCount: data['repliesCount'],
+              views: List<String>.from(data['views']),
+              created_at: DateFormat('dd-MM-yyyy').format(createdAt),
+              author: postAuthor,
+              replies: [],
+            ));
+          }
         }
       });
 
@@ -114,22 +158,26 @@ class PostService {
 
         // Check if user has been vote the post
         if (array.contains(userId)) {
+          array.remove(userId);
+
           // Un vote the post
           await postRef.update({
-            'votes': FieldValue.arrayRemove([userId])
+            'votes': FieldValue.arrayRemove([userId]),
+            'numVotes': array.length,
           });
 
-          array.remove(userId);
           return List<String>.from(array);
         }
         // user hasn't been vote the post
         else {
+          array.add(userId);
+
           // Vote the post
           await postRef.update({
-            'votes': FieldValue.arrayUnion([userId])
+            'votes': FieldValue.arrayUnion([userId]),
+            'numVotes': array.length,
           });
 
-          array.add(userId);
           return List<String>.from(array);
         }
       }
@@ -171,6 +219,40 @@ class PostService {
     catch (e) {
       print("Error: $e\n\n\n\n\n");
       return [];
+    }
+  }
+
+  Future<List<Topic>> getPopularTopic(int num) async{
+    try {
+      List<Topic> popularTopics = [];
+
+      QuerySnapshot querySnapshot = await topics
+          .orderBy('num', descending: true)
+          .limit(num)
+          .get();
+
+      for (final doc in querySnapshot.docs) {
+        final topic = doc.data() as Map<String, dynamic>;
+
+        popularTopics.add(Topic.fromMap(topic));
+      }
+
+      return popularTopics;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  // utility function
+  //
+  bool suitedWithSearch(String? searched, String data) {
+    if (searched == null) {
+      return true;
+    } else if (data.contains(searched)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
