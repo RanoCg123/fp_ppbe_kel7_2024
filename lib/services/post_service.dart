@@ -76,9 +76,9 @@ class PostService {
             question: data['question'],
             content: data['content'],
             topic: data['topic'],
-            votes: votes,
+            votes: List<String>.from(data['votes']),
             repliesCount: data['repliesCount'],
-            views: views,
+            views: List<String>.from(data['views']),
             created_at: DateFormat('dd-MM-yyyy').format(createdAt),
             author: postAuthor,
             replies: [],
@@ -101,7 +101,7 @@ class PostService {
     await posts.doc(postId).delete();
   }
 
-  Future<void> votePost(String postId, String userId) async {
+  Future<List<String>> votePost(String postId, String userId) async {
     try {
       DocumentReference postRef = posts.doc(postId);
 
@@ -118,6 +118,9 @@ class PostService {
           await postRef.update({
             'votes': FieldValue.arrayRemove([userId])
           });
+
+          array.remove(userId);
+          return List<String>.from(array);
         }
         // user hasn't been vote the post
         else {
@@ -125,15 +128,21 @@ class PostService {
           await postRef.update({
             'votes': FieldValue.arrayUnion([userId])
           });
+
+          array.add(userId);
+          return List<String>.from(array);
         }
       }
+
+      return [];
     }
     catch (e) {
       print(e);
+      return [];
     }
   }
 
-  Future<void> viewPost(String postId, String userId) async {
+  Future<List<String>> viewPost(String postId, String userId) async {
     try {
       DocumentReference postRef = posts.doc(postId);
 
@@ -149,11 +158,19 @@ class PostService {
           await postRef.update({
             'views': FieldValue.arrayUnion([userId])
           });
+
+          array.add(userId);
         }
+
+        return List<String>.from(array);
+      } else {
+        print("Post doesn't exist");
+        return [];
       }
     }
     catch (e) {
-      print(e);
+      print("Error: $e\n\n\n\n\n");
+      return [];
     }
   }
 }

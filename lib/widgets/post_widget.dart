@@ -18,28 +18,18 @@ class PostWidget extends StatefulWidget {
 class _PostWidgetState extends State<PostWidget> {
   final postService = PostService();
   final user = FirebaseAuth.instance.currentUser!;
-  Color color = Colors.grey.withOpacity(0.6);
-  List<String>? views;
+  Color color = Colors.black.withOpacity(0.6);
+  Post? post;
   int? numVotes;
 
   void vote() async {
-    await postService.votePost(widget.post.id, user.uid);
+    List<String> votes = await postService.votePost(widget.post.id, user.uid);
     setState(() {
-      // if unvote, remove user id
-      if (views!.contains(user.uid)) {
-        views!.remove(user.uid);
-      }
-
-      // if vote, add user id
-      else {
-        views!.add(user.uid);
-      }
+      post!.votes = votes;
     });
   }
 
-  void view() async {
-    await postService.viewPost(widget.post.id, user.uid);
-
+  void goToPost() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -50,21 +40,31 @@ class _PostWidgetState extends State<PostWidget> {
     );
   }
 
+  void view() async {
+    List<String> views = await postService.viewPost(widget.post.id, user.uid);
+
+    setState(() {
+      post!.views = views;
+    });
+
+    goToPost();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    views = widget.post.views;
+    post = widget.post;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (views!.contains(user.uid)) {
+    if (post!.votes.contains(user.uid)) {
       color = Colors.blueAccent;
     } else {
-      color = Colors.grey.withOpacity(0.6);
+      color = Colors.black.withOpacity(0.6);
     }
-    numVotes = views!.length;
+    numVotes = post!.votes.length;
     return GestureDetector(
       onTap: view,
       child: Container(
@@ -121,13 +121,13 @@ class _PostWidgetState extends State<PostWidget> {
                                   Text(
                                     widget.post.author.name,
                                     style: TextStyle(
-                                        color: Colors.grey.withOpacity(0.6)),
+                                        color: Colors.black.withOpacity(0.6)),
                                   ),
                                   const SizedBox(width: 15),
                                   Text(
                                     widget.post.created_at,
                                     style: TextStyle(
-                                        color: Colors.grey.withOpacity(0.6)),
+                                        color: Colors.black.withOpacity(0.6)),
                                   )
                                 ],
                               )
@@ -167,7 +167,7 @@ class _PostWidgetState extends State<PostWidget> {
                         ? "${widget.post.content.substring(0, 80)}.."
                         : widget.post.content,
                     style: TextStyle(
-                        color: Colors.grey.withOpacity(0.8),
+                        color: Colors.black.withOpacity(0.8),
                         fontSize: 16,
                         letterSpacing: .3),
                   ),
@@ -203,14 +203,14 @@ class _PostWidgetState extends State<PostWidget> {
                     children: <Widget>[
                       Icon(
                         Icons.email,
-                        color: Colors.grey.withOpacity(0.6),
+                        color: Colors.black.withOpacity(0.6),
                         size: 16,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
                         "${widget.post.repliesCount} replies",
                         style: TextStyle(
-                            fontSize: 14, color: Colors.grey.withOpacity(0.6)),
+                            fontSize: 14, color: Colors.black.withOpacity(0.6)),
                       )
                     ],
                   ),
@@ -218,14 +218,14 @@ class _PostWidgetState extends State<PostWidget> {
                     children: <Widget>[
                       Icon(
                         Icons.visibility,
-                        color: Colors.grey.withOpacity(0.6),
+                        color: Colors.black.withOpacity(0.6),
                         size: 18,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
                         "${widget.post.views.length} views",
                         style: TextStyle(
-                            fontSize: 14, color: Colors.grey.withOpacity(0.6)),
+                            fontSize: 14, color: Colors.black.withOpacity(0.6)),
                       )
                     ],
                   )
