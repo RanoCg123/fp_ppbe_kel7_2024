@@ -31,6 +31,7 @@ class _PostScreenState extends State<PostScreen> {
 
   void _loadReplies() async {
     List<Reply> replies = await _firestoreService.getReplies(widget.question.id);
+    print("masuk\n\n\n\n\n\n");
     setState(() {
       _replies = replies;
     });

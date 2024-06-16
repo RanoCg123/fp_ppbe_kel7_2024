@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                TopBar(),
+                // TopBar(),
                 Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Text(

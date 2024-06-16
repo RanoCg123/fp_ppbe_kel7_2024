@@ -5,9 +5,9 @@ class Post {
   String id;
   String question;
   String content;
-  int votes;
+  List<String> votes;
   int repliesCount;
-  int views;
+  List<String> views;
   String created_at;
   Author author;
   List<Reply> replies;
@@ -84,6 +84,10 @@ class Post {
       'author': author.toMap(),
       'replies': replies.map((reply) => reply.toMap()).toList(),
     };
+  }
+
+  bool isCreatedBy(String userId) {
+    return author.uid == userId;
   }
 
   void addReply(Reply reply) {
