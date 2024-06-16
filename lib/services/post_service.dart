@@ -100,4 +100,60 @@ class PostService {
   Future<void> deletePost(String postId) async {
     await posts.doc(postId).delete();
   }
+
+  Future<void> votePost(String postId, String userId) async {
+    try {
+      DocumentReference postRef = posts.doc(postId);
+
+      // Fetch the document
+      DocumentSnapshot postSnapshot = await postRef.get();
+
+      if (postSnapshot.exists) {
+        // Get the current array
+        List<dynamic> array = postSnapshot.get('votes');
+
+        // Check if user has been vote the post
+        if (array.contains(userId)) {
+          // Un vote the post
+          await postRef.update({
+            'votes': FieldValue.arrayRemove([userId])
+          });
+        }
+        // user hasn't been vote the post
+        else {
+          // Vote the post
+          await postRef.update({
+            'votes': FieldValue.arrayUnion([userId])
+          });
+        }
+      }
+    }
+    catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> viewPost(String postId, String userId) async {
+    try {
+      DocumentReference postRef = posts.doc(postId);
+
+      // Fetch the document
+      DocumentSnapshot postSnapshot = await postRef.get();
+
+      if (postSnapshot.exists) {
+        // Get the current array
+        List<dynamic> array = postSnapshot.get('views');
+
+        // If user hasn't been views, add uid to views list
+        if (!array.contains(userId)) {
+          await postRef.update({
+            'views': FieldValue.arrayUnion([userId])
+          });
+        }
+      }
+    }
+    catch (e) {
+      print(e);
+    }
+  }
 }

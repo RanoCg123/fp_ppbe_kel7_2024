@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/post_model.dart';
@@ -16,42 +17,56 @@ class PostWidget extends StatefulWidget {
 
 class _PostWidgetState extends State<PostWidget> {
   final postService = PostService();
+  final user = FirebaseAuth.instance.currentUser!;
   Color color = Colors.grey.withOpacity(0.6);
-  bool isVoted = false;
-  int numVotes = 0;
+  List<String>? views;
+  int? numVotes;
 
-  void vote() {
+  void vote() async {
+    await postService.votePost(widget.post.id, user.uid);
     setState(() {
-      isVoted = !isVoted;
+      // if unvote, remove user id
+      if (views!.contains(user.uid)) {
+        views!.remove(user.uid);
+      }
+
+      // if vote, add user id
+      else {
+        views!.add(user.uid);
+      }
     });
   }
 
+  void view() async {
+    await postService.viewPost(widget.post.id, user.uid);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PostScreen(
+          question: widget.post,
+        ),
+      ),
+    );
+  }
+
   @override
-  void setState(VoidCallback fn) {
-    // TODO: implement setState
-    super.setState(fn);
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    views = widget.post.views;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isVoted) {
+    if (views!.contains(user.uid)) {
       color = Colors.blueAccent;
-      numVotes = widget.post.views.length + 1;
     } else {
       color = Colors.grey.withOpacity(0.6);
-      numVotes = widget.post.views.length;
     }
+    numVotes = views!.length;
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => PostScreen(
-              question: widget.post,
-            ),
-          ),
-        );
-      },
+      onTap: view,
       child: Container(
         height: 180,
         margin: const EdgeInsets.all(15.0),
@@ -78,7 +93,8 @@ class _PostWidgetState extends State<PostWidget> {
                     Row(
                       children: <Widget>[
                         CircleAvatar(
-                          backgroundImage: NetworkImage(widget.post.author.image),
+                          backgroundImage:
+                              NetworkImage(widget.post.author.image),
                           radius: 22,
                         ),
                         Padding(
