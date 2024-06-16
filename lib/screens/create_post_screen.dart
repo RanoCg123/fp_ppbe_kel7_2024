@@ -25,6 +25,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final user = FirebaseAuth.instance.currentUser!;
   final contentController = TextEditingController();
   final questionController = TextEditingController();
+  final topicController = TextEditingController();
 
   void goToCreatedPost(Post post) {
     Navigator.push(
@@ -38,7 +39,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   void createPost() async {
-    if (questionController.text == "") {
+    if (topicController.text == "") {
+      showSnackBar(
+        context,
+        "Post\'s topic must be filled",
+        type: "warning",
+      );
+    } else if (questionController.text == "") {
       showSnackBar(
         context,
         "Post\'s title must be filled",
@@ -61,8 +68,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
         final post = await postService.addPost(
           content: contentController.text,
           question: questionController.text,
-          authorUid: user.uid,
+          topic: topicController.text,
+          authorId: user.uid,
         );
+
+        contentController.text = "";
+        questionController.text = "";
+        topicController.text = "";
+
         widget.setToHome();
         goToCreatedPost(post);
       } catch (e) {
@@ -107,8 +120,26 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
             // question text field
             CreatePostTextField(
-              controller: questionController,
+              controller: topicController,
               hintText: 'Enter your discussion\'s topic ...',
+              obscureText: false,
+              maxLine: 1,
+            ),
+
+            const SizedBox(height: 25),
+
+            const Text(
+              "Title",
+              textAlign: TextAlign.end,
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+
+            // question text field
+            CreatePostTextField(
+              controller: questionController,
+              hintText: 'Enter your discussion\'s title ...',
               obscureText: false,
               maxLine: 1,
             ),

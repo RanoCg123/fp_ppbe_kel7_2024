@@ -18,47 +18,36 @@ class PostService {
   Future<Post> addPost ({
     required String question,
     required String content,
-    required String authorUid,
+    required String topic,
+    required String authorId,
   }) async {
+    DateTime now = DateTime.now();
     DocumentReference postReference = await posts.add({
-      "author": authorUid,
+      "author": authorId,
+      "topic": topic,
       "content": content,
       "created_at": DateTime.now(),
       "question": question,
       "repliesCount": 0,
-      "views": 0,
-      "votes": 0,
+      "views": [],
+      "votes": [],
     });
 
-    DocumentSnapshot doc = await postReference.get();
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    var postAuthor = await users.doc(authorId).get();
+    var postAuthorData = Author.fromJson(postAuthor.data() as Map<String, dynamic>);
 
-    // get the data of author
-    var postAuthorDoc = await users.doc(data['author']).get();
-    Map<String, dynamic> postAuthorData = postAuthorDoc.data() as Map<String, dynamic>;
-    final postAuthor = Author.fromJson(postAuthorData);
-
-    // get the number of replies
-    var repliesSnapshot = await posts.doc(doc.id).collection('replies').get();
-    var repliesCount = repliesSnapshot.docs.length;
-
-    // convert timestamp to datetime
-    Timestamp timestamp = data['created_at'];
-    DateTime createdAt = timestamp.toDate();
-
-    final post = Post(
-      id: doc.id,
-      question: data['question'],
-      content: data['content'],
-      votes: data['votes'],
-      repliesCount: repliesCount,
-      views: data['views'],
-      created_at: DateFormat('dd-MM-yyyy').format(createdAt),
-      author: postAuthor,
+    return Post(
+      id: postReference.id,
+      question: question,
+      content: content,
+      topic: topic,
+      votes: [],
+      repliesCount: 0,
+      views: [],
+      created_at: DateFormat('dd-MM-yyyy').format(now),
+      author: postAuthorData,
       replies: [],
     );
-
-    return post;
   }
 
   //
@@ -86,6 +75,7 @@ class PostService {
             id: doc.id,
             question: data['question'],
             content: data['content'],
+            topic: data['topic'],
             votes: votes,
             repliesCount: data['repliesCount'],
             views: views,

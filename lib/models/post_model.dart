@@ -5,6 +5,7 @@ class Post {
   String id;
   String question;
   String content;
+  String topic;
   List<String> votes;
   int repliesCount;
   List<String> views;
@@ -16,6 +17,7 @@ class Post {
     required this.id,
     required this.question,
     required this.content,
+    required this.topic,
     required this.votes,
     required this.repliesCount,
     required this.views,
@@ -61,9 +63,10 @@ class Post {
       id: data['id'] ?? '',
       question: data['question'] ?? '',
       content: data['content'] ?? '',
-      votes: data['votes'] ?? 0,
+      topic: data['topic'] ?? '',
+      votes: data['votes'] ?? [],
       repliesCount: data['repliesCount'] ?? 0,
-      views: data['views'] ?? 0,
+      views: data['views'] ?? [],
       created_at: data['created_at'] ?? '',
       author: Author.fromMap(data['author']),
       replies: List<Reply>.from(
@@ -77,6 +80,7 @@ class Post {
       'id': id,
       'question': question,
       'content': content,
+      'topic': topic,
       'votes': votes,
       'repliesCount': repliesCount,
       'views': views,
