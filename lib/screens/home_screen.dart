@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fp_forum_kel7_ppbe/widgets/trending_posts.dart';
 import '../widgets/popular_topics.dart';
 import '../widgets/posts.dart';
 import '../widgets/top_bar.dart';
@@ -18,14 +19,24 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currIndex = 0;
-  List<Question>? questions;
+  List<Post>? questions;
+  List<String>? topics;
   bool questionLoaded = false;
+  final postService = PostService();
 
   void getQuestions() async {
-    questions = await PostService().getPosts();
+    setState(() {
+      questionLoaded = false;
+    });
+    questions = await postService.getPosts();
     setState(() {
       questionLoaded = true;
     });
+  }
+
+  void deletePost(String postId) {
+    postService.deletePost(postId);
+    getQuestions();
   }
 
   @override
@@ -112,7 +123,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                TopBar(),
+                // TopBar(),
                 Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Text(
@@ -135,11 +146,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-                !questionLoaded
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : Posts(questions)
+                TrendingPosts(),
               ],
             ),
           ),

@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'author_model.dart';
 
 class Reply {
-  final String id;
+  late  String id;
   final Author author;
-  late final String content;
+  late  String content;
   final String created_at;
-  final int likes;
+  late int likes;
+  late List<String> likedBy;
 
   Reply({
     this.id = '',
@@ -14,6 +15,7 @@ class Reply {
     required this.content,
     required this.created_at,
     required this.likes,
+    this.likedBy = const [],
   });
 
   factory Reply.fromMap(Map<String, dynamic> data) {
@@ -39,13 +41,23 @@ class Reply {
 
 List<Reply> replies = [
   Reply(
-    author: Author(name: 'User1', imageUrl: 'assets/images/user1.png'),
+    author: const Author(
+      uid: "sHvvquERQrNNW0rOLYYQwavihrD2",
+      name: 'Thoriq Afif Habibi',
+      image: 'assets/images/user1.png',
+      email: "thoriq@example.com",
+    ),
     content: 'Great post!',
     created_at: '2024-06-10 12:00:00',
     likes: 10,
   ),
   Reply(
-    author: Author(name: 'User2', imageUrl: 'assets/images/user2.png'),
+    author: const Author(
+      uid: "sHvvquERQrNNW0rOLYYQwavihrD2",
+      name: 'Thoriq Afif Habibi',
+      image: 'assets/images/user1.png',
+      email: "thoriq@example.com",
+    ),
     content: 'Thanks for sharing!',
     created_at: '2024-06-10 13:00:00',
     likes: 5,

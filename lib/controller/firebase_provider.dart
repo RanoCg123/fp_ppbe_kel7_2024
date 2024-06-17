@@ -13,8 +13,7 @@ class FirebaseProvider extends ChangeNotifier {
 
   List<Author> getAllUsers() {
     FirebaseFirestore.instance
-        .collection('authors')
-        .orderBy('lastActive', descending: true)
+        .collection('users')
         .snapshots(includeMetadataChanges: true)
         .listen((authors) {
       this.authors = authors.docs
@@ -27,24 +26,29 @@ class FirebaseProvider extends ChangeNotifier {
 
   Author? getUserById(String authorId) {
     FirebaseFirestore.instance
-        .collection('authors')
+        .collection('users')
         .doc(authorId)
         .snapshots(includeMetadataChanges: true)
         .listen((author) {
       this.author = Author.fromJson(author.data()!);
-      notifyListeners();
+      // notifyListeners();
     });
-    return author;
+    return this.author;
   }
-
-
+  Future<Author?> getCurrentUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String authorId = user.uid;
+      return await getUserById(authorId);
+    }
+    return null;
+  }
 
   void scrollDown() =>
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (scrollController.hasClients) {
+        if (this.scrollController.hasClients) {
           scrollController.jumpTo(
               scrollController.position.maxScrollExtent);
         }
       });
-
 }

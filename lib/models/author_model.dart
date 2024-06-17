@@ -24,4 +24,22 @@ class Author{
     'image': image,
     'email': email,
   };
+
+  factory Author.fromMap(Map<String, dynamic> data) {
+    return Author(
+      uid: data['uid'] ?? '',
+      name: data['name'] ?? '',
+      email: data['email'] ?? '',
+      image: data['image'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'name': name,
+      'email': email,
+      'image': image,
+    };
+  }
 }

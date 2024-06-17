@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/screens/home_screen.dart';
+import '../screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:fp_forum_kel7_ppbe/screens/main_screen.dart';
-import 'package:fp_forum_kel7_ppbe/screens/auth.dart';
+import '../screens/main_screen.dart';
+import '../screens/auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,9 +20,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData( 
-        primaryColor: const Color.fromRGBO(42, 91, 209, 1),
-        fontFamily: 'Montserratcd'
+      theme: ThemeData(
+          primaryColor: const Color.fromRGBO(42, 91, 209, 1),
+          fontFamily: 'Montserratcd'
       ),
       // home: const MainPage(),
       home: AuthPage(),
