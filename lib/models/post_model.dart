@@ -5,9 +5,11 @@ class Post {
   String id;
   String question;
   String content;
-  int votes;
+  String topic;
+  List<String> votes;
+  int numVotes;
   int repliesCount;
-  int views;
+  List<String> views;
   String created_at;
   Author author;
   List<Reply> replies;
@@ -16,9 +18,11 @@ class Post {
     required this.id,
     required this.question,
     required this.content,
+    required this.topic,
     required this.votes,
     required this.repliesCount,
     required this.views,
+    required this.numVotes,
     required this.created_at,
     required this.author,
     required this.replies,
@@ -42,9 +46,11 @@ class Post {
       id: data['id'] ?? '',
       question: data['question'] ?? '',
       content: data['content'] ?? '',
-      votes: data['votes'] ?? 0,
+      topic: data['topic'] ?? '',
+      votes: data['votes'] ?? [],
+      numVotes: data['numVotes'] ?? 0,
       repliesCount: data['repliesCount'] ?? 0,
-      views: data['views'] ?? 0,
+      views: data['views'] ?? [],
       created_at: data['created_at'] ?? '',
       author: Author.fromMap(data['author']),
       replies: List<Reply>.from(
@@ -58,13 +64,19 @@ class Post {
       'id': id,
       'question': question,
       'content': content,
+      'topic': topic,
       'votes': votes,
+      'numVotes': numVotes,
       'repliesCount': repliesCount,
       'views': views,
       'created_at': created_at,
       'author': author.toMap(),
       'replies': replies.map((reply) => reply.toMap()).toList(),
     };
+  }
+
+  bool isCreatedBy(String userId) {
+    return author.uid == userId;
   }
 
   void addReply(Reply reply) {

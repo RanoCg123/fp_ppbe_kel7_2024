@@ -20,9 +20,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData( 
-        primaryColor: const Color.fromRGBO(42, 91, 209, 1),
-        fontFamily: 'Montserratcd'
+      theme: ThemeData(
+          primaryColor: const Color.fromRGBO(42, 91, 209, 1),
+          fontFamily: 'Montserratcd'
       ),
       // home: const MainPage(),
       home: AuthPage(),

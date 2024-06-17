@@ -303,8 +303,8 @@ class _PostScreenState extends State<PostScreen> {
                                         ),
                                       ),
                                     ],
-//               children: widget.question.replies.map((reply) => 
-//                 Container( 
+//               children: widget.question.replies.map((reply) =>
+//                 Container(
 //                   margin: EdgeInsets.only(left:15.0, right: 15.0, top: 20.0),
 //                   decoration: BoxDecoration(
 //                     color: Colors.white,

@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/models/author_model.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/top_bar.dart';
-import 'package:fp_forum_kel7_ppbe/controller/firebase_provider.dart';
+import '../screens/my_post_screen.dart';
+
+import 'bookmark_screen.dart';
+
+import '../models/author_model.dart';
+import '../widgets/top_bar.dart';
+import '../controller/firebase_provider.dart';
 import '../models/author_model.dart';
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -27,9 +31,45 @@ class _ProfilePageState extends State<ProfilePage> {
     FirebaseAuth.instance.signOut();
   }
 
+  void goToMyPost() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MyPostPage(),
+      ),
+    );
+  }
+
+  void goToBookmark() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BookmarkPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+// <<<<<<< 3-delete-update-post
+//       child: Center(
+//         child: Column(
+//           children: [
+//             IconButton(
+//               onPressed: signUserOut,
+//               icon: const Icon(Icons.logout),
+//             ),
+//             TextButton(
+//               onPressed: goToMyPost,
+//               child: Text("My Posts"),
+//             ),
+//             TextButton(
+//               onPressed: goToBookmark,
+//               child: Text("Bookmark"),
+//             ),
+//           ],
+//         ),
       child: ListView(
         children: <Widget>[
           Container(

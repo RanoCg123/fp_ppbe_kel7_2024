@@ -43,16 +43,12 @@ class FirebaseProvider extends ChangeNotifier {
     }
     return null;
   }
-}
-
-
 
   void scrollDown() =>
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (scrollController.hasClients) {
+        if (this.scrollController.hasClients) {
           scrollController.jumpTo(
               scrollController.position.maxScrollExtent);
         }
       });
-
 }
