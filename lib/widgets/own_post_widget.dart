@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fp_forum_kel7_ppbe/util/dialog_util.dart';
 
 import '../models/post_model.dart';
 import '../screens/post_screen.dart';
@@ -12,7 +13,8 @@ class OwnPostWidget extends StatefulWidget {
   final Post post;
   final Function(Post) removeFromList;
 
-  const OwnPostWidget({super.key, required this.post, required this.removeFromList});
+  const OwnPostWidget(
+      {super.key, required this.post, required this.removeFromList});
 
   @override
   State<OwnPostWidget> createState() => _OwnPostWidgetState();
@@ -79,20 +81,23 @@ class _OwnPostWidgetState extends State<OwnPostWidget> {
 
   void deletePost() {
     try {
-      postService.deletePost(widget.post.id);
-      widget.removeFromList(widget.post);
-      super.setState(() {
-
-      });
-      showSnackBar(context, 'You have delete this post' , type: "success");
+      Navigator.pop(context);
+      showDeletePostDialog(
+        context,
+        content: "Do you want to delete this post?",
+        handler: () {
+          postService.deletePost(widget.post.id);
+          widget.removeFromList(widget.post);
+          showSnackBar(context, 'You have delete this post' , type: "success");
+          Navigator.pop(context);
+        }
+      );
     } catch (e) {
       showSnackBar(context, 'failed to delete post: $e', type: "warning");
     }
   }
 
-  void updatePost() {
-
-  }
+  void updatePost() {}
 
   void showOptions() {
     List<Option> options = [
@@ -154,7 +159,7 @@ class _OwnPostWidgetState extends State<OwnPostWidget> {
                       children: <Widget>[
                         CircleAvatar(
                           backgroundImage:
-                          NetworkImage(widget.post.author.image),
+                              NetworkImage(widget.post.author.image),
                           radius: 22,
                         ),
                         Padding(
