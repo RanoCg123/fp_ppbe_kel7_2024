@@ -1,34 +1,35 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import '../services/bookmark_service.dart';
+import 'package:fp_forum_kel7_ppbe/screens/edit_post_screen.dart';
+import 'package:fp_forum_kel7_ppbe/util/dialog_util.dart';
 
 import '../models/post_model.dart';
 import '../screens/post_screen.dart';
 import '../services/post_service.dart';
-
+import '../util/modal_util.dart';
 import '../util/snackbar_util.dart';
+import '../services/bookmark_service.dart';
 
-class PostWidget extends StatefulWidget {
+class OwnPostWidget extends StatefulWidget {
   final Post post;
+  final Function(Post) removeFromList;
 
-  const PostWidget({super.key, required this.post});
+  const OwnPostWidget(
+      {super.key, required this.post, required this.removeFromList});
 
   @override
-  State<PostWidget> createState() => _PostWidgetState();
+  State<OwnPostWidget> createState() => _OwnPostWidgetState();
 }
 
-class _PostWidgetState extends State<PostWidget> {
+class _OwnPostWidgetState extends State<OwnPostWidget> {
   final postService = PostService();
-  final bookmarkService = BookmarkService();
   final user = FirebaseAuth.instance.currentUser!;
+  final bookmarkService = BookmarkService();
   Color voteButtonColor = Colors.black.withOpacity(0.6);
   IconData bookmarkIcon = Icons.bookmark_border;
-  Post? post;
   List<String> bookmarkedPostId = [];
+  Post? post;
   int? numVotes;
-  int? repliesCount;
 
   void vote() async {
     List<String> votes = await postService.votePost(widget.post.id, user.uid);
@@ -58,12 +59,6 @@ class _PostWidgetState extends State<PostWidget> {
     goToPost();
   }
 
-  void fetchRepliesCount() async {
-    int count = await postService.getRepliesCount(widget.post.id);
-    setState(() {
-      repliesCount = count;
-    }});
-  }
   void bookmark() async {
     bookmarkService.bookmarkPost(
       userId: user.uid,
@@ -85,12 +80,52 @@ class _PostWidgetState extends State<PostWidget> {
     });
   }
 
+  void deletePost() {
+    try {
+      Navigator.pop(context);
+      showDeletePostDialog(context, content: "Do you want to delete this post?",
+          handler: () {
+        postService.deletePost(widget.post.id);
+        widget.removeFromList(widget.post);
+        showSnackBar(context, 'You have delete this post', type: "success");
+        Navigator.pop(context);
+      });
+    } catch (e) {
+      showSnackBar(context, 'failed to delete post: $e', type: "warning");
+    }
+  }
+
+  void updatePost() {
+    try {
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => EditPostPage(post: post!,)),
+      ).then((data) {
+        setState(() {
+          post!.topic = data['topic'];
+          post!.question = data['question'];
+          post!.content = data['content'];
+        });
+      });
+    } catch (e) {
+      showSnackBar(context, 'failed to delete post: $e', type: "warning");
+    }
+  }
+
+  void showOptions() {
+    List<Option> options = [
+      Option(text: "Edit post", icon: Icons.edit, handler: updatePost),
+      Option(text: "Delete post", icon: Icons.delete, handler: deletePost),
+    ];
+    showBottomOptionModal(context, options, 130.0);
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getBookmarked();
-    fetchRepliesCount();
     post = widget.post;
   }
 
@@ -102,7 +137,6 @@ class _PostWidgetState extends State<PostWidget> {
       voteButtonColor = Colors.black.withOpacity(0.6);
     }
 
-    print("${post!.id}: $bookmarkedPostId");
     if (bookmarkedPostId.contains(post!.id)) {
       bookmarkIcon = Icons.bookmark;
     } else {
@@ -181,6 +215,19 @@ class _PostWidgetState extends State<PostWidget> {
                         ),
                       ],
                     ),
+                    SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: IconButton(
+                        onPressed: showOptions,
+                        // padding: EdgeInsets.all(0.0),
+                        icon: const Icon(
+                          // Icons.delete,
+                          Icons.more_vert,
+                          size: 26,
+                        ),
+                      ),
+                    ),
                     // Icon(
                     //   Icons.delete,
                     //   color: Colors.grey.withOpacity(0.6),
@@ -238,7 +285,7 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        "${repliesCount} replies",
+                        "${widget.post.repliesCount} replies",
                         style: TextStyle(
                             fontSize: 14, color: Colors.black.withOpacity(0.6)),
                       )

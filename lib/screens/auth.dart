@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/screens/main_screen.dart';
+import '../screens/main_screen.dart';
 import 'login.dart';
 import 'home_screen.dart';
 import 'loginorregister.dart';

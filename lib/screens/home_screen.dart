@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/trending_posts.dart';
+import '../screens/search_post_screen.dart';
+import '../widgets/trending_posts.dart';
 import '../widgets/popular_topics.dart';
 import '../widgets/posts.dart';
 import '../widgets/top_bar.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/popular_topics.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/posts.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/top_bar.dart';
+import '../widgets/popular_topics.dart';
+import '../widgets/posts.dart';
+import '../widgets/top_bar.dart';
 import '../models/post_model.dart';
 import '../services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -19,31 +20,50 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currIndex = 0;
-  List<Post>? questions;
-  List<String>? topics;
-  bool questionLoaded = false;
-  final postService = PostService();
+  TextEditingController searchController = TextEditingController();
 
-  void getQuestions() async {
-    setState(() {
-      questionLoaded = false;
-    });
-    questions = await postService.getPosts();
-    setState(() {
-      questionLoaded = true;
-    });
+  void searchPost(String text) {
+    goToSearchPostPage(searched: text);
+    searchController.text = "";
   }
 
-  void deletePost(String postId) {
-    postService.deletePost(postId);
-    getQuestions();
+  void goToSearchPostPage({
+    String searched = "",
+    String topic = "",
+  }) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchPostPage(
+          topic: topic,
+          searched: searched,
+        ),
+      ),
+    );
   }
+//   List<Post>? questions;
+//   bool questionLoaded = false;
+//   final postService = PostService();
+
+//   void getQuestions() async {
+//     setState(() {
+//       questionLoaded = false;
+//     });
+//     questions = await postService.getPosts();
+//     setState(() {
+//       questionLoaded = true;
+//     });
+//   }
+
+//   void deletePost(String postId) {
+//     postService.deletePost(postId);
+//     getQuestions();
+//   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getQuestions();
   }
 
   // final user = FirebaseAuth.instance.currentUser!;
@@ -124,6 +144,21 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 // TopBar(),
+                SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10.0,
+                    horizontal: 15.0,
+                  ),
+                  child: SearchBar(
+                    padding: WidgetStateProperty.all(EdgeInsets.all(10.0)),
+                    onSubmitted: (text) => searchPost(text),
+                    controller: searchController,
+                    hintText: "Search posts",
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.all(20.0),
                   child: Text(
@@ -147,6 +182,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 TrendingPosts(),
+                Posts(),
               ],
             ),
           ),

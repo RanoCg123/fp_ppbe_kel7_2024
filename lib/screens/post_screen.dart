@@ -50,6 +50,14 @@ class _PostScreenState extends State<PostScreen> {
     final newReply = Reply(
       id: '',
       author: author,
+// =======
+//       id: DateTime.now().millisecondsSinceEpoch.toString(),
+//       // author: Author(
+//       //   name: 'Current User',
+//       //   image: 'assets/images/default_user.png',
+//       // ),
+//       author: FirebaseProvider().getUserById(user.uid)!,
+// >>>>>>> master
       content: _replyController.text,
       created_at: DateTime.now().toString(),
       likes: 0,

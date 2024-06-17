@@ -1,9 +1,9 @@
-import 'package:fp_forum_kel7_ppbe/screens/home_screen.dart';
+import '../screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/my_button.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/my_textfield.dart';
+import '../widgets/my_button.dart';
+import '../widgets/my_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/gestures.dart';
@@ -28,6 +28,14 @@ class _RegisterPageState extends State<RegisterPage> {
   Uint8List? file;
   // sign user in method
   void signUserUp() async {
+    if (file == null) {
+      showErrorMessage('Please select an image in the circle');
+      return;
+    }
+    if (nameController.text == null) {
+      showErrorMessage('Please type tour name');
+      return;
+    }
     // show loading circle
     showDialog(
       context: context,
@@ -40,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // try sign in
     try {
-      if (passwordController.text == confirmpasswordController.text) {
+      if (passwordController.text == confirmpasswordController.text)  {
         final user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text,
           password: passwordController.text,

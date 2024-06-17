@@ -3,6 +3,8 @@ import 'package:fp_forum_kel7_ppbe/services/post_service.dart';
 
 import '../models/topic_model.dart';
 
+import '../screens/search_post_screen.dart';
+
 class PopularTopics extends StatefulWidget {
   @override
   State<PopularTopics> createState() => _PopularTopicsState();
@@ -32,6 +34,21 @@ class _PopularTopicsState extends State<PopularTopics> {
     });
   }
 
+  void goToSearchPostPage({
+    String searched = "",
+    String topic = "",
+  }) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchPostPage(
+          topic: topic,
+          searched: searched,
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -51,6 +68,7 @@ class _PopularTopicsState extends State<PopularTopics> {
               itemBuilder: (BuildContext context, int index) {
                 return GestureDetector(
                   onTap: () {
+                    goToSearchPostPage(topic: popularTopics![index].name);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(10.0),

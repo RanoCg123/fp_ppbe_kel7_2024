@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fp_forum_kel7_ppbe/controller/firebase_provider.dart';
-import 'package:fp_forum_kel7_ppbe/models/author_model.dart';
-import 'package:fp_forum_kel7_ppbe/models/post_model.dart';
-import 'package:fp_forum_kel7_ppbe/models/replies_model.dart';
+import '../controller/firebase_provider.dart';
+import '../models/author_model.dart';
+import '../models/post_model.dart';
+import '../models/replies_model.dart';
 import 'package:intl/intl.dart';
 
 import '../models/topic_model.dart';
@@ -20,8 +20,16 @@ class PostService {
   final CollectionReference users =
   FirebaseFirestore.instance.collection("users");
 
+  // get collection of notes
+  final CollectionReference topics =
+      FirebaseFirestore.instance.collection("topics");
+
+  // get collection of users
+  final CollectionReference users =
+      FirebaseFirestore.instance.collection("users");
+
   // CREATE: new note
-  Future<Post> addPost ({
+  Future<Post> addPost({
     required String question,
     required String content,
     required String topic,
@@ -37,10 +45,12 @@ class PostService {
       "repliesCount": 0,
       "views": [],
       "votes": [],
+      "numVotes": 0,
     });
 
     // add or set topic
-    QuerySnapshot topicSnapshot = await topics.where('name', isEqualTo: topic).get();
+    QuerySnapshot topicSnapshot =
+        await topics.where('name', isEqualTo: topic).get();
     if (topicSnapshot.docs.isEmpty) {
       topics.add({
         "name": topic,
@@ -56,7 +66,8 @@ class PostService {
     }
 
     var postAuthor = await users.doc(authorId).get();
-    var postAuthorData = Author.fromJson(postAuthor.data() as Map<String, dynamic>);
+    var postAuthorData =
+        Author.fromJson(postAuthor.data() as Map<String, dynamic>);
 
     return Post(
       id: postReference.id,
@@ -75,6 +86,7 @@ class PostService {
 
   // get post
   Future<List<Post>> getPosts({
+    final String? authorId,
     final String? topic,
     final String? title,
     final String? content,
@@ -85,12 +97,14 @@ class PostService {
     try {
       List<Post> questions = [];
       Query query = posts;
-      
+
+      if (authorId != null) {
+        query = query.where("author", isEqualTo: authorId);
+      }
       if (topic != null) {
         query = query.where("topic", isEqualTo: topic);
       }
       if (orderBy != null) {
-        print(orderBy);
         query = query.orderBy(orderBy, descending: descending);
       }
       if (limit != null) {
@@ -100,13 +114,14 @@ class PostService {
       await query.get().then((event) async {
         for (var doc in event.docs) {
           var data = doc.data() as Map<String, dynamic>;
-          print(data);
 
           // add if the title and content suitable
-          if (suitedWithSearch(title, data["question"]) && suitedWithSearch(content, data["content"])){
+          if (suitedWithSearch(title, data["question"]) ||
+              suitedWithSearch(content, data["content"])) {
             // get the data of author
             var postAuthorDoc = await users.doc(data['author']).get();
-            Map<String, dynamic> postAuthorData = postAuthorDoc.data() as Map<String, dynamic>;
+            Map<String, dynamic> postAuthorData =
+                postAuthorDoc.data() as Map<String, dynamic>;
             final postAuthor = Author.fromJson(postAuthorData);
 
             // convert timestamp to datetime
@@ -137,8 +152,42 @@ class PostService {
     }
   }
 
-  Future<void> updatePost(String postId, Post post) async {
-    await posts.doc(postId).update(post.toMap());
+  Future<Post?> getPostById(String postId) async {
+    DocumentSnapshot postSnapshot = await posts.doc(postId).get();
+
+    if (postSnapshot.exists) {
+      final data = postSnapshot.data() as Map<String, dynamic>;
+
+      // get the data of author
+      var postAuthorDoc = await users.doc(data['author']).get();
+      Map<String, dynamic> postAuthorData =
+      postAuthorDoc.data() as Map<String, dynamic>;
+      final postAuthor = Author.fromJson(postAuthorData);
+
+      // convert timestamp to datetime
+      Timestamp timestamp = data['created_at'];
+      DateTime createdAt = timestamp.toDate();
+
+      return Post(
+        id: postSnapshot.id,
+        question: data['question'],
+        content: data['content'],
+        topic: data['topic'],
+        votes: List<String>.from(data['votes']),
+        numVotes: data['numVotes'],
+        repliesCount: data['repliesCount'],
+        views: List<String>.from(data['views']),
+        created_at: DateFormat('dd-MM-yyyy').format(createdAt),
+        author: postAuthor,
+        replies: [],
+      );
+    } else {
+      return null;
+    }
+  }
+
+  Future<void> updatePost(String postId, Map<String, dynamic> data) async {
+    await posts.doc(postId).update(data);
   }
 
   Future<void> deletePost(String postId) async {
@@ -183,8 +232,7 @@ class PostService {
       }
 
       return [];
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       return [];
     }
@@ -215,21 +263,18 @@ class PostService {
         print("Post doesn't exist");
         return [];
       }
-    }
-    catch (e) {
+    } catch (e) {
       print("Error: $e\n\n\n\n\n");
       return [];
     }
   }
 
-  Future<List<Topic>> getPopularTopic(int num) async{
+  Future<List<Topic>> getPopularTopic(int num) async {
     try {
       List<Topic> popularTopics = [];
 
-      QuerySnapshot querySnapshot = await topics
-          .orderBy('num', descending: true)
-          .limit(num)
-          .get();
+      QuerySnapshot querySnapshot =
+          await topics.orderBy('num', descending: true).limit(num).get();
 
       for (final doc in querySnapshot.docs) {
         final topic = doc.data() as Map<String, dynamic>;
@@ -244,12 +289,33 @@ class PostService {
     }
   }
 
+  Future<List<String>> getTopics() async {
+    try {
+      List<String> popularTopics = [];
+
+      QuerySnapshot querySnapshot =
+        await topics.orderBy('num', descending: true).get();
+
+      for (final doc in querySnapshot.docs) {
+        final topic = doc.data() as Map<String, dynamic>;
+        final String topicName = topic['name'].toString();
+
+        popularTopics.add(topicName);
+      }
+
+      return popularTopics;
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
   // utility function
   //
   bool suitedWithSearch(String? searched, String data) {
     if (searched == null) {
       return true;
-    } else if (data.contains(searched)) {
+    } else if (data.toLowerCase().contains(searched.toLowerCase())) {
       return true;
     } else {
       return false;
