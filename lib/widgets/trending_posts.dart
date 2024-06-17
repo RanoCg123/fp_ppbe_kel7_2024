@@ -5,6 +5,7 @@ import '../models/post_model.dart';
 import '../services/post_service.dart';
 import '../util/snackbar_util.dart';
 import '../util/modal_util.dart';
+import 'own_post_widget.dart';
 
 class TrendingPosts extends StatefulWidget {
   // final List<Post>? posts;
@@ -37,39 +38,8 @@ class _TrendingPostsState extends State<TrendingPosts> {
     });
   }
 
-  void deletePost() {
-    try {
-      postService.deletePost(selectedPost!.id);
-      setState(() {
-        posts!.remove(selectedPost!);
-      });
-      showSnackBar(context, 'You have delete this post' , type: "success");
-    } catch (e) {
-      showSnackBar(context, 'failed to delete post: $e', type: "warning");
-    }
-  }
-
-  void updatePost() {}
-
-  void bookmarkPost() {}
-
-  void showOptions(Post post) {
-    selectedPost = post;
-    List<Option> options;
-    if (selectedPost!.author.uid == user.uid) {
-      options = [
-        Option(text: "Edit post", icon: Icons.edit, handler: updatePost),
-        Option(text: "Delete post", icon: Icons.delete, handler: deletePost),
-      ];
-      showBottomOptionModal(context, options, 130.0);
-    } else {
-      options = [Option(
-        text: "Bookmark this post",
-        icon: Icons.bookmark,
-        handler: bookmarkPost,
-      ),];
-      showBottomOptionModal(context, options, 80.0);
-    }
+  void removePost(Post post) {
+    getTrendingPosts();
   }
 
   @override
@@ -89,10 +59,16 @@ class _TrendingPostsState extends State<TrendingPosts> {
           )
         ]
             : posts!
-            .map((post) => PostWidget(
-          post: post,
-          showOptions: showOptions,
-        ))
+            .map((Post post) {
+              // other user's post
+              if (post.author.uid != user.uid) {
+                return PostWidget(post: post);
+              }
+              // owner post
+              else {
+                return OwnPostWidget(post: post, removeFromList: removePost,);
+              }
+            })
             .toList());
   }
 }
