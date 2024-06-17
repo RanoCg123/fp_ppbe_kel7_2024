@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/util/dialog_util.dart';
+import '../util/dialog_util.dart';
 import '../controller/firebase_provider.dart';
 import '../models/post_model.dart';
 import '../widgets/create_post_button.dart';

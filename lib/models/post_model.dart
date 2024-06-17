@@ -27,26 +27,7 @@ class Post {
     required this.author,
     required this.replies,
   });
-
-  // factory Post.fromJson(Map<String, dynamic> json) =>
-  //     Post(
-  //       id: json['id'],
-  //       question: json['question'],
-  //       content: json['content'],
-  //       votes: json['votes'] as int,
-  //       repliesCount: json['repliesCount'] as int,
-  //       views: json['views'] as int,
-  //       created_at: json['created_at'],
-  //       author: Author
-  //     );
-  //
-  // Map<String, dynamic> toJson() => {
-  //   'uid': uid,
-  //   'name': name,
-  //   'image': image,
-  //   'email': email,
-  // };
-
+  
 //   factory Question.fromMap(Map<String, dynamic> data) {
 //     return Question(
 //       question: data['question'] ?? '',

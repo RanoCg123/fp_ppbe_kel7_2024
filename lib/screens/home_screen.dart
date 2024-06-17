@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/screens/search_post_screen.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/trending_posts.dart';
+import '../screens/search_post_screen.dart';
+import '../widgets/trending_posts.dart';
 import '../widgets/popular_topics.dart';
 import '../widgets/posts.dart';
 import '../widgets/top_bar.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/popular_topics.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/posts.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/top_bar.dart';
+import '../widgets/popular_topics.dart';
+import '../widgets/posts.dart';
+import '../widgets/top_bar.dart';
 import '../models/post_model.dart';
 import '../services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,6 +40,24 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+//   List<Post>? questions;
+//   bool questionLoaded = false;
+//   final postService = PostService();
+
+//   void getQuestions() async {
+//     setState(() {
+//       questionLoaded = false;
+//     });
+//     questions = await postService.getPosts();
+//     setState(() {
+//       questionLoaded = true;
+//     });
+//   }
+
+  void deletePost(String postId) {
+    postService.deletePost(postId);
+    getQuestions();
   }
 
   @override
@@ -164,6 +182,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 TrendingPosts(),
+                Posts()
               ],
             ),
           ),

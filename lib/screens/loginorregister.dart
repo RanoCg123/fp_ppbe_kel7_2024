@@ -1,5 +1,5 @@
-import 'package:fp_forum_kel7_ppbe/screens/login.dart';
-import 'package:fp_forum_kel7_ppbe/screens/register.dart';
+import '../screens/login.dart';
+import '../screens/register.dart';
 import 'package:flutter/material.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
