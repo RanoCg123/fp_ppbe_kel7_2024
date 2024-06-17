@@ -37,6 +37,40 @@ class _PostsState extends State<Posts> {
     });
   }
 
+//   void deletePost() {
+//     try {
+//       postService.deletePost(selectedPost!.id);
+//       setState(() {
+//         posts!.remove(selectedPost!);
+//       });
+//       showSnackBar(context, 'You have delete this post' , type: "success");
+//     } catch (e) {
+//       showSnackBar(context, 'failed to delete post: $e', type: "warning");
+//     }
+//   }
+
+//   void updatePost() {}
+
+//   void bookmarkPost() {}
+
+//   void showOptions(Post post) {
+//     selectedPost = post;
+//     List<Option> options;
+//     if (selectedPost!.author.uid == user.uid) {
+//       options = [
+//         Option(text: "Edit post", icon: Icons.edit, handler: updatePost),
+//         Option(text: "Delete post", icon: Icons.delete, handler: deletePost),
+//       ];
+//       showBottomOptionModal(context, options, 130.0);
+//     } else {
+//       options = [Option(
+//         text: "Bookmark this post",
+//         icon: Icons.bookmark,
+//         handler: bookmarkPost,
+//       ),];
+//       showBottomOptionModal(context, options, 80.0);
+//     }
+//   }
 //   void deletePost(String postId) {
 //     postService.deletePost(postId);
 //     getQuestions();
@@ -60,196 +94,6 @@ class _PostsState extends State<Posts> {
               ]
             : posts!
                 .map((post) => PostWidget(post: post,))
-// =======
-//             : questions!
-//                 .map((question) => GestureDetector(
-//                       onTap: () {
-//                         Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                                 builder: (_) => PostScreen(
-//                                       question: question,
-//                                     )));
-//                       },
-//                       child: Container(
-//                         height: 180,
-//                         margin: EdgeInsets.all(15.0),
-//                         decoration: BoxDecoration(
-//                             color: Colors.white,
-//                             borderRadius: BorderRadius.circular(10.0),
-//                             boxShadow: [
-//                               BoxShadow(
-//                                   color: Colors.black26.withOpacity(0.05),
-//                                   offset: Offset(0.0, 6.0),
-//                                   blurRadius: 10.0,
-//                                   spreadRadius: 0.10)
-//                             ]),
-//                         child: Padding(
-//                           padding: EdgeInsets.all(15.0),
-//                           child: Column(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                             children: <Widget>[
-//                               Container(
-//                                 height: 70,
-//                                 child: Row(
-//                                   mainAxisAlignment:
-//                                       MainAxisAlignment.spaceBetween,
-//                                   children: <Widget>[
-//                                     Row(
-//                                       children: <Widget>[
-//                                         CircleAvatar(
-//                                           backgroundImage:
-//                                               AssetImage(question.author.image),
-//                                           radius: 22,
-//                                         ),
-//                                         Padding(
-//                                           padding:
-//                                               const EdgeInsets.only(left: 8.0),
-//                                           child: Column(
-//                                             crossAxisAlignment:
-//                                                 CrossAxisAlignment.start,
-//                                             mainAxisAlignment:
-//                                                 MainAxisAlignment.center,
-//                                             children: <Widget>[
-//                                               Container(
-//                                                 width: MediaQuery.of(context)
-//                                                         .size
-//                                                         .width *
-//                                                     0.65,
-//                                                 child: Text(
-//                                                   question.question,
-//                                                   style: TextStyle(
-//                                                       fontSize: 18,
-//                                                       fontWeight:
-//                                                           FontWeight.bold,
-//                                                       letterSpacing: .4),
-//                                                 ),
-//                                               ),
-//                                               SizedBox(height: 2.0),
-//                                               Row(
-//                                                 children: <Widget>[
-//                                                   Text(
-//                                                     question.author.name,
-//                                                     style: TextStyle(
-//                                                         color: Colors.grey
-//                                                             .withOpacity(0.6)),
-//                                                   ),
-//                                                   SizedBox(width: 15),
-//                                                   Text(
-//                                                     question.created_at,
-//                                                     style: TextStyle(
-//                                                         color: Colors.grey
-//                                                             .withOpacity(0.6)),
-//                                                   )
-//                                                 ],
-//                                               )
-//                                             ],
-//                                           ),
-//                                         ),
-//                                       ],
-//                                     ),
-//                                     SizedBox(
-//                                       height: 26,
-//                                       width: 26,
-//                                       child: IconButton(
-//                                         onPressed: () {
-//                                           deletePost(question.id);
-//                                         },
-//                                         // padding: EdgeInsets.all(0.0),
-//                                         icon: Icon(
-//                                           Icons.delete,
-//                                           size: 26,
-//                                         ),
-//                                       ),
-//                                     ),
-//                                     // Icon(
-//                                     //   Icons.delete,
-//                                     //   color: Colors.grey.withOpacity(0.6),
-//                                     //   size: 26,
-//                                     // )
-//                                   ],
-//                                 ),
-//                               ),
-//                               Container(
-//                                 height: 50,
-//                                 child: Center(
-//                                   child: Text(
-//                                     question.content.length > 80
-//                                         ? "${question.content.substring(0, 80)}.."
-//                                         : "${question.content}",
-//                                     style: TextStyle(
-//                                         color: Colors.grey.withOpacity(0.8),
-//                                         fontSize: 16,
-//                                         letterSpacing: .3),
-//                                   ),
-//                                 ),
-//                               ),
-//                               SizedBox(height: 5),
-//                               Row(
-//                                 mainAxisAlignment:
-//                                     MainAxisAlignment.spaceBetween,
-//                                 children: <Widget>[
-//                                   Row(
-//                                     crossAxisAlignment:
-//                                         CrossAxisAlignment.center,
-//                                     children: <Widget>[
-//                                       Icon(
-//                                         Icons.thumb_up,
-//                                         color: Colors.grey.withOpacity(0.6),
-//                                         size: 22,
-//                                       ),
-//                                       SizedBox(width: 4.0),
-//                                       Text(
-//                                         "${question.votes} votes",
-//                                         style: TextStyle(
-//                                             fontSize: 14,
-//                                             color: Colors.grey.withOpacity(0.6),
-//                                             fontWeight: FontWeight.w600),
-//                                       )
-//                                     ],
-//                                   ),
-//                                   Row(
-//                                     children: <Widget>[
-//                                       Icon(
-//                                         Icons.email,
-//                                         color: Colors.grey.withOpacity(0.6),
-//                                         size: 16,
-//                                       ),
-//                                       SizedBox(width: 4.0),
-//                                       Text(
-//                                         "${question.repliesCount} replies",
-//                                         style: TextStyle(
-//                                             fontSize: 14,
-//                                             color:
-//                                                 Colors.grey.withOpacity(0.6)),
-//                                       )
-//                                     ],
-//                                   ),
-//                                   Row(
-//                                     children: <Widget>[
-//                                       Icon(
-//                                         Icons.visibility,
-//                                         color: Colors.grey.withOpacity(0.6),
-//                                         size: 18,
-//                                       ),
-//                                       SizedBox(width: 4.0),
-//                                       Text(
-//                                         "${question.views} views",
-//                                         style: TextStyle(
-//                                             fontSize: 14,
-//                                             color:
-//                                                 Colors.grey.withOpacity(0.6)),
-//                                       )
-//                                     ],
-//                                   )
-//                                 ],
-//                               )
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                     ))
-// >>>>>>> master
                 .toList());
   }
 }

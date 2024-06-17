@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/services/bookmark_service.dart';
+import '../services/bookmark_service.dart';
 
 import '../models/post_model.dart';
 import '../screens/post_screen.dart';
 import '../services/post_service.dart';
+
 import '../util/snackbar_util.dart';
 
 class PostWidget extends StatefulWidget {
@@ -26,6 +28,7 @@ class _PostWidgetState extends State<PostWidget> {
   Post? post;
   List<String> bookmarkedPostId = [];
   int? numVotes;
+  int? repliesCount;
 
   void vote() async {
     List<String> votes = await postService.votePost(widget.post.id, user.uid);
@@ -55,6 +58,12 @@ class _PostWidgetState extends State<PostWidget> {
     goToPost();
   }
 
+  void fetchRepliesCount() async {
+    int count = await postService.getRepliesCount(widget.post.id);
+    setState(() {
+      repliesCount = count;
+    }});
+  }
   void bookmark() async {
     bookmarkService.bookmarkPost(
       userId: user.uid,
@@ -81,6 +90,7 @@ class _PostWidgetState extends State<PostWidget> {
     // TODO: implement initState
     super.initState();
     getBookmarked();
+    fetchRepliesCount();
     post = widget.post;
   }
 
@@ -228,7 +238,7 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        "${widget.post.repliesCount} replies",
+                        "${repliesCount} replies",
                         style: TextStyle(
                             fontSize: 14, color: Colors.black.withOpacity(0.6)),
                       )

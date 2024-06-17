@@ -10,7 +10,15 @@ import '../models/topic_model.dart';
 class PostService {
   // get collection of notes
   final CollectionReference posts =
-      FirebaseFirestore.instance.collection("posts");
+  FirebaseFirestore.instance.collection("posts");
+
+  // get collection of notes
+  final CollectionReference topics =
+  FirebaseFirestore.instance.collection("topics");
+
+  // get collection of users
+  final CollectionReference users =
+  FirebaseFirestore.instance.collection("users");
 
   // get collection of notes
   final CollectionReference topics =
@@ -311,6 +319,31 @@ class PostService {
       return true;
     } else {
       return false;
+    }
+  }
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Future<void> updateRepliesCount(String postId, int newRepliesCount) async {
+    try {
+      await posts.doc(postId).update({
+        'repliesCount': newRepliesCount,
+      });
+    } catch (e) {
+      print('Error updating repliesCount: $e');
+    }
+  }
+
+  Future<int> getRepliesCount(String postId) async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('posts')
+          .doc(postId)
+          .collection('replies')
+          .get();
+      return snapshot.size;
+    } catch (e) {
+      print(e);
+      return 0;
     }
   }
 }

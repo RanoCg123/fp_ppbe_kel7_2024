@@ -37,32 +37,60 @@ class _PostScreenState extends State<PostScreen> {
   }
 
   void _addReply() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return;
+    }
+    // Ambil data pengguna dari Firestore menggunakan UID
+    final author = await _firestoreService.getUserById(user.uid);
+    if (author == null) {
+      print('User not found');
+      return;
+    }
     final newReply = Reply(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      // author: Author(
-      //   name: 'Current User',
-      //   image: 'assets/images/default_user.png',
-      // ),
-      author: FirebaseProvider().getUserById(user.uid)!,
+      id: '',
+      author: author,
+// =======
+//       id: DateTime.now().millisecondsSinceEpoch.toString(),
+//       // author: Author(
+//       //   name: 'Current User',
+//       //   image: 'assets/images/default_user.png',
+//       // ),
+//       author: FirebaseProvider().getUserById(user.uid)!,
+// >>>>>>> master
       content: _replyController.text,
-      created_at: DateTime.now().toIso8601String(),
+      created_at: DateTime.now().toString(),
       likes: 0,
     );
-    await _firestoreService.addReply(widget.question.id, newReply);
-    setState(() {
-      _replies.add(newReply);
-      _replyController.clear();
-    });
+    try {
+      String replyId = await _firestoreService.addReply(widget.question.id, newReply);
+      setState(() {
+        newReply.id = replyId; // Set the ID returned from Firestore
+        _replies.add(newReply);
+        _replyController.clear();
+
+      });
+    } catch (e) {
+      print('Error adding reply: $e');
+    }
   }
 
   void _editReply(Reply reply) {
+    if (user.uid != reply.author.uid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('You can only edit your own replies.'),
+        ),
+      );
+      return;
+    }
     showModalBottomSheet(
       context: context,
       builder: (context) {
         return ReplyScreen(
           reply: reply,
           onSave: (updatedReply) async {
-            await _firestoreService.updateReply(updatedReply.id, updatedReply);
+            await _firestoreService.updateReply(widget.question.id, updatedReply.id, updatedReply);
             setState(() {
               int index = _replies.indexWhere((r) => r.id == updatedReply.id);
               if (index != -1) {
@@ -72,7 +100,7 @@ class _PostScreenState extends State<PostScreen> {
             Navigator.pop(context);
           },
           onDelete: (deletedReply) async {
-            await _firestoreService.deleteReply(deletedReply.id);
+            await _firestoreService.deleteReply(widget.question.id, deletedReply.id);
             setState(() {
               _replies.removeWhere((r) => r.id == deletedReply.id);
             });
@@ -81,6 +109,16 @@ class _PostScreenState extends State<PostScreen> {
         );
       },
     );
+  }
+
+  void _toggleLikeReply(Reply reply) async {
+    final user = FirebaseAuth.instance.currentUser!;
+    if (reply.likedBy.contains(user.uid)) {
+      await _firestoreService.unlikeReply(widget.question.id, reply.id, user.uid);
+    } else {
+      await _firestoreService.likeReply(widget.question.id, reply.id, user.uid);
+    }
+    _loadReplies(); // Reload replies to update the state
   }
 
   @override
@@ -299,7 +337,7 @@ class _PostScreenState extends State<PostScreen> {
                                       Text(
                                         reply.created_at,
                                         style: TextStyle(
-                                          color: Colors.grey.withOpacity(0.4),
+                                          color: Colors.black,
                                         ),
                                       ),
                                     ],
@@ -336,16 +374,17 @@ class _PostScreenState extends State<PostScreen> {
                                 ),
                               ],
                             ),
-                            IconButton(
-                              onPressed: () {
-                                _editReply(reply);
-                              },
-                              icon: Icon(
-                                Icons.edit,
-                                color: Colors.grey.withOpacity(0.6),
-                                size: 20,
+                            if (user.uid == reply.author.uid)
+                              IconButton(
+                                onPressed: () {
+                                  _editReply(reply);
+                                },
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Colors.grey,
+                                  size: 20,
+                                ),
                               ),
-                            ),
                           ],
                         ),
                       ),
@@ -362,16 +401,23 @@ class _PostScreenState extends State<PostScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          Icon(
-                            Icons.thumb_up,
-                            color: Colors.grey.withOpacity(0.5),
-                            size: 20,
+                          IconButton(
+                            icon: Icon(
+                              Icons.thumb_up,
+                              color: reply.likedBy.contains(user.uid)
+                                  ? Colors.blue
+                                  : Colors.grey,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              _toggleLikeReply(reply);
+                            },
                           ),
                           SizedBox(width: 5.0),
                           Text(
                             "${reply.likes}",
                             style: TextStyle(
-                              color: Colors.grey.withOpacity(0.5),
+                              color: Colors.black,
                             ),
                           ),
                         ],

@@ -55,10 +55,10 @@ class _HomePageState extends State<HomePage> {
 //     });
 //   }
 
-  void deletePost(String postId) {
-    postService.deletePost(postId);
-    getQuestions();
-  }
+//   void deletePost(String postId) {
+//     postService.deletePost(postId);
+//     getQuestions();
+//   }
 
   @override
   void initState() {
@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 TrendingPosts(),
-                Posts()
+                Posts(),
               ],
             ),
           ),
