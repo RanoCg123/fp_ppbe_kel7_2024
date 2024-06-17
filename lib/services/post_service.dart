@@ -178,8 +178,8 @@ class PostService {
     }
   }
 
-  Future<void> updatePost(String postId, Post post) async {
-    await posts.doc(postId).update(post.toMap());
+  Future<void> updatePost(String postId, Map<String, dynamic> data) async {
+    await posts.doc(postId).update(data);
   }
 
   Future<void> deletePost(String postId) async {

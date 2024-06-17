@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fp_forum_kel7_ppbe/screens/edit_post_screen.dart';
 import 'package:fp_forum_kel7_ppbe/util/dialog_util.dart';
 
 import '../models/post_model.dart';
@@ -82,22 +83,35 @@ class _OwnPostWidgetState extends State<OwnPostWidget> {
   void deletePost() {
     try {
       Navigator.pop(context);
-      showDeletePostDialog(
-        context,
-        content: "Do you want to delete this post?",
-        handler: () {
-          postService.deletePost(widget.post.id);
-          widget.removeFromList(widget.post);
-          showSnackBar(context, 'You have delete this post' , type: "success");
-          Navigator.pop(context);
-        }
-      );
+      showDeletePostDialog(context, content: "Do you want to delete this post?",
+          handler: () {
+        postService.deletePost(widget.post.id);
+        widget.removeFromList(widget.post);
+        showSnackBar(context, 'You have delete this post', type: "success");
+        Navigator.pop(context);
+      });
     } catch (e) {
       showSnackBar(context, 'failed to delete post: $e', type: "warning");
     }
   }
 
-  void updatePost() {}
+  void updatePost() {
+    try {
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => EditPostPage(post: post!,)),
+      ).then((data) {
+        setState(() {
+          post!.topic = data['topic'];
+          post!.question = data['question'];
+          post!.content = data['content'];
+        });
+      });
+    } catch (e) {
+      showSnackBar(context, 'failed to delete post: $e', type: "warning");
+    }
+  }
 
   void showOptions() {
     List<Option> options = [
