@@ -21,6 +21,7 @@ class _PostWidgetState extends State<PostWidget> {
   Color color = Colors.black.withOpacity(0.6);
   Post? post;
   int? numVotes;
+  int? repliesCount;
 
   void vote() async {
     List<String> votes = await postService.votePost(widget.post.id, user.uid);
@@ -53,11 +54,18 @@ class _PostWidgetState extends State<PostWidget> {
   void bookmark() async {
   }
 
+  void fetchRepliesCount() async {
+    int count = await postService.getRepliesCount(widget.post.id);
+    setState(() {
+      repliesCount = count;
+    });
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     post = widget.post;
+    fetchRepliesCount();
   }
 
   @override
@@ -97,7 +105,7 @@ class _PostWidgetState extends State<PostWidget> {
                       children: <Widget>[
                         CircleAvatar(
                           backgroundImage:
-                              NetworkImage(widget.post.author.image),
+                          NetworkImage(widget.post.author.image),
                           radius: 22,
                         ),
                         Padding(
@@ -146,19 +154,12 @@ class _PostWidgetState extends State<PostWidget> {
                         onPressed: () {
                           widget.showOptions(widget.post);
                         },
-                        // padding: EdgeInsets.all(0.0),
                         icon: const Icon(
-                          // Icons.delete,
                           Icons.more_vert,
                           size: 26,
                         ),
                       ),
                     ),
-                    // Icon(
-                    //   Icons.delete,
-                    //   color: Colors.grey.withOpacity(0.6),
-                    //   size: 26,
-                    // )
                   ],
                 ),
               ),
@@ -211,7 +212,7 @@ class _PostWidgetState extends State<PostWidget> {
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        "${widget.post.repliesCount} replies",
+                        "${repliesCount} replies",
                         style: TextStyle(
                             fontSize: 14, color: Colors.black.withOpacity(0.6)),
                       )

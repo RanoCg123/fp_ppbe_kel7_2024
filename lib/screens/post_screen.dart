@@ -41,14 +41,12 @@ class _PostScreenState extends State<PostScreen> {
     if (user == null) {
       return;
     }
-
     // Ambil data pengguna dari Firestore menggunakan UID
     final author = await _firestoreService.getUserById(user.uid);
     if (author == null) {
       print('User not found');
       return;
     }
-
     final newReply = Reply(
       id: '',
       author: author,
@@ -62,6 +60,7 @@ class _PostScreenState extends State<PostScreen> {
         newReply.id = replyId; // Set the ID returned from Firestore
         _replies.add(newReply);
         _replyController.clear();
+
       });
     } catch (e) {
       print('Error adding reply: $e');

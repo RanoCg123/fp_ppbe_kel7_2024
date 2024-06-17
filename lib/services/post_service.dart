@@ -255,4 +255,29 @@ class PostService {
       return false;
     }
   }
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Future<void> updateRepliesCount(String postId, int newRepliesCount) async {
+    try {
+      await posts.doc(postId).update({
+        'repliesCount': newRepliesCount,
+      });
+    } catch (e) {
+      print('Error updating repliesCount: $e');
+    }
+  }
+
+  Future<int> getRepliesCount(String postId) async {
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('posts')
+          .doc(postId)
+          .collection('replies')
+          .get();
+      return snapshot.size;
+    } catch (e) {
+      print(e);
+      return 0;
+    }
+  }
 }

@@ -62,6 +62,7 @@ class FirestoreService {
     return null;
   }
 
+
   Future<String> addReply(String questionId, Reply reply) async {
     try {
       DocumentReference docRef = _db
@@ -81,6 +82,9 @@ class FirestoreService {
         'content': reply.content,
         'created_at': reply.created_at,
         'likes': reply.likes,
+      });
+      await _db.collection('posts').doc(questionId).update({
+        'repliesCount': FieldValue.increment(1),
       });
       return reply.id;
     } catch (e) {
@@ -105,6 +109,9 @@ class FirestoreService {
           .doc(questionId)
           .collection('replies')
           .doc(replyId).delete();
+      await _db.collection('posts').doc(questionId).update({
+        'repliesCount': FieldValue.increment(-1),
+      });
     } catch (e) {
       print('Error deleting reply: $e');
       throw e; // throw error untuk ditangkap di tempat pemanggilan
