@@ -4,6 +4,7 @@ import 'package:fp_forum_kel7_ppbe/models/author_model.dart';
 import 'package:fp_forum_kel7_ppbe/widgets/top_bar.dart';
 import 'package:fp_forum_kel7_ppbe/controller/firebase_provider.dart';
 import '../models/author_model.dart';
+import 'package:provider/provider.dart';
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -29,6 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final firebaseProvider = Provider.of<FirebaseProvider>(context, listen: false);
+    Author? author = firebaseProvider.getUserById(user.uid);
     return SafeArea(
       child: ListView(
         children: <Widget>[
@@ -64,14 +67,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       CircleAvatar(
                         radius: 30,
-                        backgroundImage: NetworkImage(user.photoURL ?? ''),
+                        backgroundImage: NetworkImage(author!.image),
                       ),
                       SizedBox(width: 10),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            user.displayName ?? 'User Name',
+                            author.name,
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
@@ -79,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ),
                           Text(
-                            user.email ?? '',
+                            author.email,
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.6),
                               fontSize: 14.0,
