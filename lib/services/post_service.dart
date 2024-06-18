@@ -120,6 +120,14 @@ class PostService {
             Timestamp timestamp = data['created_at'];
             DateTime createdAt = timestamp.toDate();
 
+
+            if(data['numVotes'] == null) {
+              print("numvotes null");
+            }
+            if(data['repliesCount'] == null) {
+              print('repliescount null');
+            }
+
             questions.add(Post(
               id: doc.id,
               question: data['question'],
@@ -133,6 +141,7 @@ class PostService {
               author: postAuthor,
               replies: [],
             ));
+            print("end");
           }
         }
       });
@@ -179,11 +188,61 @@ class PostService {
   }
 
   Future<void> updatePost(String postId, Map<String, dynamic> data) async {
+    final post = await getPostById(postId);
+
     await posts.doc(postId).update(data);
+
+    if (post != null && post.topic != data["topic"]) {
+      final oldTopic = post.topic;
+      final newTopic = data["topic"];
+
+      if (oldTopic != newTopic) {
+        // decrease old topic count
+        QuerySnapshot topicSnapshot =
+          await topics.where('name', isEqualTo: post.topic).get();
+        if (topicSnapshot.docs.isNotEmpty) {
+          for (final doc in topicSnapshot.docs) {
+            final topicData = doc.data() as Map<String, dynamic>;
+
+            doc.reference.update({
+              "num": topicData["num"] - 1,
+            });
+          }
+        }
+
+        // increase new topic count
+        topicSnapshot =
+          await topics.where('name', isEqualTo: data["topic"]).get();
+        if (topicSnapshot.docs.isNotEmpty) {
+          for (final doc in topicSnapshot.docs) {
+            final topicData = doc.data() as Map<String, dynamic>;
+
+            doc.reference.update({
+              "num": topicData["num"] + 1,
+            });
+          }
+        }
+      }
+    }
   }
 
   Future<void> deletePost(String postId) async {
-    await posts.doc(postId).delete();
+    final post = await getPostById(postId);
+    if (post != null) {
+      await posts.doc(post.id).delete();
+
+      // decrease topic count
+      QuerySnapshot topicSnapshot =
+        await topics.where('name', isEqualTo: post.topic).get();
+      if (topicSnapshot.docs.isNotEmpty) {
+        for (final doc in topicSnapshot.docs) {
+          final data = doc.data() as Map<String, dynamic>;
+          doc.reference.update({
+            "num": data["num"] - 1,
+          });
+        }
+      }
+    }
   }
 
   Future<List<String>> votePost(String postId, String userId) async {
@@ -270,6 +329,10 @@ class PostService {
 
       for (final doc in querySnapshot.docs) {
         final topic = doc.data() as Map<String, dynamic>;
+
+        if (topic['num'] <= 0) {
+          break;
+        }
 
         popularTopics.add(Topic.fromMap(topic));
       }

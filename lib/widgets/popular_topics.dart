@@ -15,7 +15,8 @@ class _PopularTopicsState extends State<PopularTopics> {
     Colors.purple,
     Colors.blueAccent,
     Colors.greenAccent,
-    Colors.redAccent
+    Colors.redAccent,
+    Colors.orange
   ];
   List<Topic>? popularTopics;
   final postService = PostService();
@@ -27,6 +28,8 @@ class _PopularTopicsState extends State<PopularTopics> {
     });
 
     final topics = await postService.getPopularTopic(5);
+
+    print(topics.map((element) => element.name));
 
     setState(() {
       popularTopics = topics;
