@@ -43,6 +43,36 @@ class FirebaseFirestoreService {
 
     await firestore.collection('users').doc(uid).update(data);
   }
+  static Future<void> deleteUser(String uid) async {
+    // Delete user's posts
+    QuerySnapshot postsSnapshot = await firestore
+        .collection('posts')
+        .where('author', isEqualTo: uid)
+        .get();
 
-  // Upload profile image to Firebase Storage and return the UR
+    for (var postDoc in postsSnapshot.docs) {
+      await firestore.collection('posts').doc(postDoc.id).delete();
+    }
+
+    // Delete user's replies
+    QuerySnapshot repliesSnapshot = await firestore
+        .collectionGroup('replies')
+        .where('author.uid', isEqualTo: uid)
+        .get();
+
+    for (var replyDoc in repliesSnapshot.docs) {
+      await replyDoc.reference.delete();
+    }
+
+   // Delete user bookmark
+    QuerySnapshot bookmark = await firestore.collection('users').doc(uid).collection('bookmark').get();
+    for (var bookmarkdoc in bookmark.docs) {
+      await bookmarkdoc.reference.delete();
+    }
+    // Delete user doc
+    await firestore.collection('users').doc(uid).delete();
+  }
 }
+  // Upload profile image to Firebase Storage and return the UR
+
+

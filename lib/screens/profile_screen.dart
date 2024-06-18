@@ -5,7 +5,7 @@ import 'bookmark_screen.dart';
 import '../models/author_model.dart';
 import '../widgets/top_bar.dart';
 import '../controller/firebase_provider.dart';
-import '../models/author_model.dart';
+import '/screens/auth.dart';
 import 'package:provider/provider.dart';
 import '../controller/media_service.dart';
 import '../widgets/my_textfield.dart';
@@ -210,7 +210,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 MyButton(
                 'Update Profile',
                 onTap: () async {
-                if (formKey.currentState!.validate()) {
+                if (formKey.currentState!.validate() ) {
                 String name = nameController.text.trim();
                 String email = emailController.text.trim();
                 String currentPassword = currentPasswordController.text.trim();
@@ -224,16 +224,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 file!, 'image/profile/${user..uid}');
                 }
 
-                await FirebaseFirestoreService.updateUser(
-                uid: user.uid,
-                name: name,
-                email: email,
-                imageUrl: imageUrl,
-                );
-
                 if (currentPassword.isNotEmpty && newPassword.isNotEmpty) {
-                await updatePassword(currentPassword, newPassword);
+                  await updatePassword(currentPassword, newPassword, email);
+                  await FirebaseFirestoreService.updateUser(
+                    uid: user.uid,
+                    name: name,
+                    email: email,
+                    imageUrl: imageUrl,
+                  );
                 }
+
+
+
+
 
                 ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Profile updated successfully')),
@@ -246,7 +249,53 @@ class _ProfilePageState extends State<ProfilePage> {
                 }
                 },
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(height: 25),
+                MyButton(
+                  'Delete Account',
+                  onTap: () async {
+                    bool confirm = await showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Text('Confirm Delete'),
+                        content: Text('Are you sure you want to delete your account? This action cannot be undone.'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text('Cancel'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.red,
+                            ),
+                            child: Text('Delete'),
+                          ),
+                        ],
+                      ),
+                    );
+
+                    if (confirm) {
+                      try {
+                        await FirebaseFirestoreService.deleteUser(user.uid);
+                        await user.delete();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => AuthPage()),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Account deleted successfully')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to delete account: $e')),
+                        );
+                      }
+                    }
+                  },
+                ),
               ],
               ),
               ),
@@ -257,8 +306,9 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> updatePassword(String currentPassword, String newPassword) async {
+  Future<void> updatePassword(String currentPassword, String newPassword, String email) async {
     User? user = FirebaseAuth.instance.currentUser;
+
     if (user != null) {
       AuthCredential credential = EmailAuthProvider.credential(
         email: user.email!,
@@ -266,6 +316,9 @@ class _ProfilePageState extends State<ProfilePage> {
       );
       await user.reauthenticateWithCredential(credential);
       await user.updatePassword(newPassword);
+      if (email.isNotEmpty){
+        await user.updateEmail(email);
+      }
     }
   }
 
