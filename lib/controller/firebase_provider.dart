@@ -44,6 +44,8 @@ class FirebaseProvider extends ChangeNotifier {
     return null;
   }
 
+
+
   void scrollDown() =>
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (this.scrollController.hasClients) {

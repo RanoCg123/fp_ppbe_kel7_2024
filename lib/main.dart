@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../screens/home_screen.dart';
+import '/screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import '../screens/main_screen.dart';
-import '../screens/auth.dart';
-
+import '/screens/main_screen.dart';
+import '/screens/auth.dart';
+import 'package:provider/provider.dart';
+import 'controller/firebase_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -17,15 +18,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
+    return ChangeNotifierProvider(
+      create: (_) => FirebaseProvider(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
           primaryColor: const Color.fromRGBO(42, 91, 209, 1),
           fontFamily: 'Montserratcd'
+        ),
+        // home: const MainPage(),
+        home: AuthPage(),
       ),
-      // home: const MainPage(),
-      home: AuthPage(),
     );
   }
 }

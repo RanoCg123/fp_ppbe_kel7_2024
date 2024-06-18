@@ -3,11 +3,13 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/author_model.dart';
-import 'firebase_storage_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebaseFirestoreService {
   static final firestore = FirebaseFirestore.instance;
+  static final storage = FirebaseStorage.instance;
 
+  // Create a new user in Firestore
   static Future<void> createUser({
     required String name,
     required String image,
@@ -21,10 +23,54 @@ class FirebaseFirestoreService {
       image: image,
     );
 
-    await firestore
-        .collection('users')
-        .doc(uid)
-        .set(author.toJson());
+    await firestore.collection('users').doc(uid).set(author.toJson());
   }
 
+  // Update user profile information in Firestore
+  static Future<void> updateUser({
+    required String uid,
+    required String name,
+    required image,
+  }) async {
+    final data = {
+      'name': name,
+      'image': image,
+    };
+
+
+    await firestore.collection('users').doc(uid).update(data);
+  }
+  static Future<void> deleteUser(String uid) async {
+    // Delete user's posts
+    QuerySnapshot postsSnapshot = await firestore
+        .collection('posts')
+        .where('author', isEqualTo: uid)
+        .get();
+
+    for (var postDoc in postsSnapshot.docs) {
+      await firestore.collection('posts').doc(postDoc.id).delete();
+    }
+
+    // Delete user's replies
+    QuerySnapshot repliesSnapshot = await firestore
+        .collectionGroup('replies')
+        .where('author.uid', isEqualTo: uid)
+        .get();
+
+    for (var replyDoc in repliesSnapshot.docs) {
+      await replyDoc.reference.delete();
+    }
+
+   // Delete user bookmark
+    QuerySnapshot bookmark = await firestore.collection('users').doc(uid).collection('bookmark').get();
+    for (var bookmarkdoc in bookmark.docs) {
+      await bookmarkdoc.reference.delete();
+    }
+    await storage.ref('image/profile/${uid}').delete();
+    // Delete user doc
+    await firestore.collection('users').doc(uid).delete();
+  }
 }
+  // Upload profile image to Firebase Storage and return the UR
+
+
