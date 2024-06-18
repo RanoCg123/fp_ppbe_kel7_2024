@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_forum_kel7_ppbe/models/author_model.dart';
-import 'package:fp_forum_kel7_ppbe/widgets/top_bar.dart';
-import 'package:fp_forum_kel7_ppbe/controller/firebase_provider.dart';
+import '../screens/my_post_screen.dart';
+import 'bookmark_screen.dart';
+import '../models/author_model.dart';
+import '../widgets/top_bar.dart';
+import '../controller/firebase_provider.dart';
 import '../models/author_model.dart';
 import 'package:provider/provider.dart';
 class ProfilePage extends StatefulWidget {
@@ -26,6 +28,24 @@ class _ProfilePageState extends State<ProfilePage> {
   // sign user out method
   void signUserOut() {
     FirebaseAuth.instance.signOut();
+  }
+
+  void goToMyPost() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MyPostPage(),
+      ),
+    );
+  }
+
+  void goToBookmark() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => BookmarkPage(),
+      ),
+    );
   }
 
   @override
@@ -105,6 +125,14 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             ),
+          TextButton(
+            onPressed: goToMyPost,
+            child: Text("My Posts"),
+          ),
+          TextButton(
+            onPressed: goToBookmark,
+            child: Text("Bookmark"),
+          ),
         ],
       ),
     );

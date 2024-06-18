@@ -4,12 +4,6 @@ import '../screens/home_screen.dart';
 import '../screens/profile_screen.dart';
 
 class MainPage extends StatefulWidget {
-  static const List<Widget> _pages = <Widget>[
-    HomePage(),
-    CreatePostPage(),
-    ProfilePage(),
-  ];
-
   const MainPage({super.key});
 
   @override
@@ -18,6 +12,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  Widget? page;
 
   //New
   void _onItemTapped(int index) {
@@ -26,11 +21,26 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  // change to home
+  void changeToHome() {
+    setState(() {
+      _selectedIndex = 0;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_selectedIndex == 0) {
+      page = const HomePage();
+    } else if (_selectedIndex == 1) {
+      page = CreatePostPage(setToHome: changeToHome);
+    } else if (_selectedIndex == 2) {
+      page = const ProfilePage();
+    }
     return Scaffold(
       body: Center(
-        child: MainPage._pages.elementAt(_selectedIndex), //New
+        // child: _pages.elementAt(_selectedIndex), //New
+        child: page!,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
