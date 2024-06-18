@@ -8,6 +8,7 @@ import 'firebase_storage_service.dart';
 class FirebaseFirestoreService {
   static final firestore = FirebaseFirestore.instance;
 
+  // Create a new user in Firestore
   static Future<void> createUser({
     required String name,
     required String image,
@@ -21,10 +22,27 @@ class FirebaseFirestoreService {
       image: image,
     );
 
-    await firestore
-        .collection('users')
-        .doc(uid)
-        .set(author.toJson());
+    await firestore.collection('users').doc(uid).set(author.toJson());
   }
 
+  // Update user profile information in Firestore
+  static Future<void> updateUser({
+    required String uid,
+    required String name,
+    required String email,
+    required imageUrl,
+  }) async {
+    final data = {
+      'name': name,
+      'email': email,
+    };
+
+    if (imageUrl != null) {
+      data['image'] = imageUrl;
+    }
+
+    await firestore.collection('users').doc(uid).update(data);
+  }
+
+  // Upload profile image to Firebase Storage and return the UR
 }
