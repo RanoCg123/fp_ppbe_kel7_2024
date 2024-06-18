@@ -50,14 +50,6 @@ class _PostScreenState extends State<PostScreen> {
     final newReply = Reply(
       id: '',
       author: author,
-// =======
-//       id: DateTime.now().millisecondsSinceEpoch.toString(),
-//       // author: Author(
-//       //   name: 'Current User',
-//       //   image: 'assets/images/default_user.png',
-//       // ),
-//       author: FirebaseProvider().getUserById(user.uid)!,
-// >>>>>>> master
       content: _replyController.text,
       created_at: DateTime.now().toString(),
       likes: 0,
@@ -174,7 +166,7 @@ class _PostScreenState extends State<PostScreen> {
                           Row(
                             children: <Widget>[
                               CircleAvatar(
-                                backgroundImage: AssetImage(widget.question.author.image),
+                                backgroundImage: NetworkImage(widget.question.author.image),
                                 radius: 22,
                               ),
                               Padding(
@@ -237,15 +229,15 @@ class _PostScreenState extends State<PostScreen> {
                             children: <Widget>[
                               Icon(
                                 Icons.thumb_up,
-                                color: Colors.grey.withOpacity(0.5),
+                                color: Colors.black.withOpacity(0.5),
                                 size: 22,
                               ),
                               SizedBox(width: 4.0),
                               Text(
-                                "${widget.question.votes} votes",
+                                "${widget.question.votes.length} votes",
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey.withOpacity(0.5),
+                                  color: Colors.black.withOpacity(0.5),
                                 ),
                               )
                             ],
@@ -255,15 +247,15 @@ class _PostScreenState extends State<PostScreen> {
                             children: <Widget>[
                               Icon(
                                 Icons.visibility,
-                                color: Colors.grey.withOpacity(0.5),
+                                color: Colors.black.withOpacity(0.5),
                                 size: 18,
                               ),
                               SizedBox(width: 4.0),
                               Text(
-                                "${widget.question.views} views",
+                                "${widget.question.views.length} views",
                                 style: TextStyle(
                                   fontSize: 14,
-                                  color: Colors.grey.withOpacity(0.5),
+                                  color: Colors.black.withOpacity(0.5),
                                   fontWeight: FontWeight.w600,
                                 ),
                               )
@@ -316,7 +308,7 @@ class _PostScreenState extends State<PostScreen> {
                             Row(
                               children: <Widget>[
                                 CircleAvatar(
-                                  backgroundImage: AssetImage(reply.author.image),
+                                  backgroundImage: NetworkImage(reply.author.image),
                                   radius: 18,
                                 ),
                                 Padding(

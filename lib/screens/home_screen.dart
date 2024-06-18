@@ -182,7 +182,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 TrendingPosts(),
-                Posts(),
               ],
             ),
           ),

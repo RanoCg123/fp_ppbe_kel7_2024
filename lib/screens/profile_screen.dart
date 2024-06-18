@@ -52,24 +52,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-// <<<<<<< 3-delete-update-post
-//       child: Center(
-//         child: Column(
-//           children: [
-//             IconButton(
-//               onPressed: signUserOut,
-//               icon: const Icon(Icons.logout),
-//             ),
-//             TextButton(
-//               onPressed: goToMyPost,
-//               child: Text("My Posts"),
-//             ),
-//             TextButton(
-//               onPressed: goToBookmark,
-//               child: Text("Bookmark"),
-//             ),
-//           ],
-//         ),
       child: ListView(
         children: <Widget>[
           Container(
@@ -142,6 +124,14 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             ),
+          TextButton(
+            onPressed: goToMyPost,
+            child: Text("My Posts"),
+          ),
+          TextButton(
+            onPressed: goToBookmark,
+            child: Text("Bookmark"),
+          ),
         ],
       ),
     );

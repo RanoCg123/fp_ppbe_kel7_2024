@@ -20,14 +20,6 @@ class PostService {
   final CollectionReference users =
   FirebaseFirestore.instance.collection("users");
 
-  // get collection of notes
-  final CollectionReference topics =
-      FirebaseFirestore.instance.collection("topics");
-
-  // get collection of users
-  final CollectionReference users =
-      FirebaseFirestore.instance.collection("users");
-
   // CREATE: new note
   Future<Post> addPost({
     required String question,
