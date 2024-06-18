@@ -3,10 +3,11 @@ import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/author_model.dart';
-import 'firebase_storage_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebaseFirestoreService {
   static final firestore = FirebaseFirestore.instance;
+  static final storage = FirebaseStorage.instance;
 
   // Create a new user in Firestore
   static Future<void> createUser({
@@ -29,17 +30,13 @@ class FirebaseFirestoreService {
   static Future<void> updateUser({
     required String uid,
     required String name,
-    required String email,
-    required imageUrl,
+    required image,
   }) async {
     final data = {
       'name': name,
-      'email': email,
+      'image': image,
     };
 
-    if (imageUrl != null) {
-      data['image'] = imageUrl;
-    }
 
     await firestore.collection('users').doc(uid).update(data);
   }
@@ -69,6 +66,7 @@ class FirebaseFirestoreService {
     for (var bookmarkdoc in bookmark.docs) {
       await bookmarkdoc.reference.delete();
     }
+    await storage.ref('image/profile/${uid}').delete();
     // Delete user doc
     await firestore.collection('users').doc(uid).delete();
   }
